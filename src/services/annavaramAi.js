@@ -65,9 +65,14 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
       userPrompt: prompt
     });
 
-    if (text.includes('vratam') || text.includes('pooja')) {
+    if (text.includes('vratam') || text.includes('pooja') || text.includes('crowd')) {
       if (response.map_commands && response.map_commands.length === 0) {
-        response.map_commands.push({ action: 'set_view', center: [17.2815, 82.3965], zoom: 17 });
+        response.map_commands.push({ 
+          action: 'set_view', 
+          center: [17.2815, 82.3965], 
+          zoom: 17,
+          label: 'Vratam Live Crowd Status'
+        });
       }
     }
 
@@ -80,7 +85,13 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
 
 const generateFallback = (text, status) => {
   return {
-    explanation: `Om Namo Satyanarayanaya. Annavaram Sector 05 Link unstable. I am your Ratnagiri Mission Commander. Please refer to the tactical HUD for Vratam batch telemetry.`,
-    visual_data: { type: 'GREETING', decision: 'GO' }
+    explanation: `Om Namo Satyanarayanaya. Annavaram Sector 05 Mission Link is currently unstable due to a sacred grid disruption. I am your Ratnagiri Mission Commander. Tactical telemetry is still active on your HUD.`,
+    map_commands: [{ 
+      action: 'set_view', 
+      center: [17.2815, 82.3965], 
+      zoom: 17,
+      label: 'Vratam Live Crowd Status'
+    }],
+    visual_data: { type: 'RECOVERY', decision: 'CAUTION' }
   };
 };

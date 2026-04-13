@@ -29,6 +29,8 @@ export const MASTER_PROJECT_INTEL = {
             "SSD": "Slotted Sarva Darshan (Free tokens). Usually sells out by 6 AM.",
             "VQC": "Vaikuntam Queue Complex. Multi-compartment waiting area.",
             "LADDU": "Srivari Laddu Prasadam. Managed via specialized counters.",
+            "SEVAS": "Suprabhatam (Wake up), Thomala (Flower), Archana (Name chanting), Kalyanotsavam (Wedding), Unjal Seva (Swing).",
+            "BRAHMOTSAVAM": "Annual 9-day festival (Sep/Oct) featuring the Golden Chariot and Garuda Vahanam.",
             "VAPS": "Visvesvara Admission Priority Sector for senior citizens."
          }
       },
@@ -38,8 +40,9 @@ export const MASTER_PROJECT_INTEL = {
          deity: "Goddess Kanaka Durga",
          core_knowledge: {
             "INDRAKEELADRI": "The sacred hill home of the Goddess.",
-            "BHAVANI_DEEKSHA": "41-day austerity period ending in December.",
-            "DASARA": "Grand Navaratri festival with 10 lakh+ pilgrims."
+            "BHAVANI_DEEKSHA": "41-day austerity period ending in December with massive giri pradakshina.",
+            "SEVAS": "Khadgamala Archana, Kumkumarchana (Daily specialized puja for women), Chandi Homam.",
+            "DASARA": "Grand Navaratri festival. The Goddess takes different avatars each day. Ends with Teppotsavam in Krishna River."
          }
       },
       srisailam: {
@@ -47,9 +50,11 @@ export const MASTER_PROJECT_INTEL = {
          mantra: "Om Namah Shivaya",
          deity: "Lord Mallikarjuna & Goddess Bhramaramba",
          core_knowledge: {
-            "JYOTIRLINGA": "One of the 12 sacred Shiva shrines.",
-            "SHAKTI_PEETHA": "One of the 18 Maha Shakti Peethas.",
-            "FOREST_GATES": "Dornala/Mannanur gates CLOSE at 9:00 PM and OPEN at 6:00 AM."
+            "JYOTIRLINGA": "One of the 12 sacred Shiva shrines. Only here can devotees perform 'Sparsha Darshan' (touching the Ida/Pingala).",
+            "SHAKTI_PEETHA": "One of the 18 Maha Shakti Peethas. Home of Goddess Bhramaramba.",
+            "SEVAS": "Rudrabhishekam (Daily), Chandihomam, Navavarana Pooja.",
+            "MAHASHIVARATRI": "The most significant festival. Featuring the Lingodbhava Kala Mahanyasa Purvaka Ekadasa Rudrabhishekam.",
+            "FOREST_GATES": "Dornala/Mannanur gates CLOSE at 9:00 PM and OPEN at 6:00 AM. No transit allowed at night."
          }
       },
       simhachalam: {
@@ -57,9 +62,10 @@ export const MASTER_PROJECT_INTEL = {
          mantra: "Om Namo Narasimhaya",
          deity: "Lord Varaha Lakshmi Narasimha Swamy",
          core_knowledge: {
-            "CHANDANOTSAVAM": "Annual event where the deity's sandalwood cover is removed.",
-            "NIJAROOPA": "The original form of the deity, visible once a year.",
-            "SIMHAGIRI": "The lion-shaped hill housing the temple."
+            "CHANDANOTSAVAM": "Annual Akshaya Tritiya event. The ONLY day to see the 'Nijaroopa' (original form) without sandalwood cover.",
+            "SEVAS": "Nitya Kalyanam, Ashtottaram, Sahasra Namarchana.",
+            "GIRIPRADAKSHINA": "The 32km sacred walk around the Simhagiri hill, usually on Ashadha Pournami.",
+            "SIMHAGIRI": "The lion-shaped hill housing the powerful Narasimha avatar."
          }
       },
       annavaram: {
@@ -67,9 +73,10 @@ export const MASTER_PROJECT_INTEL = {
          mantra: "Om Namo Satyanarayanaya",
          deity: "Lord Satyanarayana Swamy",
          core_knowledge: {
-            "RATNAGIRI": "The hill on which the temple is situated.",
-            "VRATAM": "The primary ritual for family prosperity.",
-            "PAMBA": "The sacred river reservoir at the hill base."
+            "VRATAM": "The core pilgrimage ritual. Available as Special (Rs. 1500) or Regular (Rs. 500) batches.",
+            "BHEESHMA_EKADASI": "Major festival celebrated with Ekadasi Vratam and specialized temple rituals.",
+            "SEVAS": "Pratahkala Pooja, Sayamkala Pooja, Nitya Kalyanam.",
+            "RATNAGIRI": "The hill on which the temple is situated. Accessible via 460 steps or toll road."
          }
       },
       sabarimala: {
@@ -77,9 +84,10 @@ export const MASTER_PROJECT_INTEL = {
          mantra: "Swamiye Saranam Ayyappa",
          deity: "Lord Ayyappa",
          core_knowledge: {
-            "PATHINETTAMPADI": "18 Holy Steps. Only for pilgrims with Irumudikettu.",
-            "VRUTHAM": "41-day mandatory austerity period.",
-            "PAMBA": "Base camp and river for sacred bath."
+            "PATHINETTAMPADI": "18 Holy Steps. Only for pilgrims with 'Irumudikettu' and 41-day Vrutham.",
+            "SEVAS": "Neyyabhishekam (Ghee offering), Padi Pooja, Usha Pooja, Harivarasanam (Closing lullaby).",
+            "MAKARA_VILAKKU": "The sighting of 'Makarajyothi' on the Ponnambalamedu hill on Jan 14/15.",
+            "PAMBA": "The base camp where pilgrims take a holy bath before the 5km uphill trek."
          }
       }
    }

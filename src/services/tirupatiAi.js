@@ -652,8 +652,14 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       }
 
       return {
-         explanation: "Om Namo Venkatesaya. Primary Mission link unstable. Select route info in the map overlays.",
-         visual_data: { type: "RECOVERY_MODE", decision: "AVOID" }
+         explanation: "Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable due to a sacred grid disruption. I am your Srivari Mission Commander. Tactical telemetry is still active on your HUD.",
+         map_commands: [{ 
+            action: 'set_view', 
+            center: [13.6833, 79.3474], 
+            zoom: 17,
+            label: 'Sector 01 SSD Token Status'
+         }],
+         visual_data: { type: "RECOVERY_MODE", decision: "CAUTION" }
       };
    };
 

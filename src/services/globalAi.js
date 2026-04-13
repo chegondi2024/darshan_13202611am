@@ -6,34 +6,40 @@ const hasValidKey = isGroqEnabled();
 
 const GLOBAL_DARSHAN_KNOWLEDGE = {
    tirupati: {
-      tickets: "SSD (Free Slot Token), SED (Rs.300 Online), DIVYA (Free for foot pilgrims), SARVA (Free walk-in, longest wait), VIP (Rs.1500+).",
-      timings: "Suprabhata Seva (3AM), Thomala (3:30AM), Kalyanotsavam (10AM), Ekanta Seva (10:30PM)",
-      rules: "Strict traditional dress code. Senior citizen priority darshan available at 10AM/3PM with medical proof. Free Laddus given for all."
+      tickets: "SSD (Free Slot Token - local counters), SED (Rs.300 Online), DIVYA (Free for foot pilgrims), SARVA (Free walk-in), VIP (Rs.1500+).",
+      pujas_sevas: "Suprabhatam (3AM), Thomala (3:30AM), Archana (4:30AM), Kalyanotsavam (10AM), Sahasra Deepalankara (5:30PM), Ekanta Seva (10:30PM).",
+      festivals: "Annual Brahmotsavam (Sep/Oct), Vaikunta Ekadasi (Jan), Rathasapthami (Feb).",
+      rules: "Strict traditional dress code (Dhoti/Saree). Electronic gadgets BANNED inside. Senior citizen darshan at specific slots."
    },
    vijayawada: {
-      tickets: "Dharma Darshanam (Free), Special Ticket (Rs.100), VIP Ticket (Rs.300).",
-      timings: "Suprabhata Seva (4AM), Laksha Kumkumarchana (10AM), Pallaki Seva (6PM).",
-      rules: "Heavy crowds during Dasara/Navaratri and Bhavani Deeksha. Ghat road closed to private vehicles during peaks (use free TTD buses)."
+      tickets: "Dharma Darshanam (Free), Mukhamandapam (Rs.100), Antaralayam (Rs.300/500).",
+      pujas_sevas: "Suprabhata Seva (4AM), Khadgamala Archana, Kumkumarchana (Daily for women), Chandi Homam (8:30AM).",
+      festivals: "Dasara Navaratri (10 days), Teppotsavam (Boat festival - last day of Dasara), Shakambari Festival (Deity decorated with vegetables).",
+      rules: "Heavy crowds during Bhavani Deeksha (Dec). Giri Pradakshina (12km) is common during festivals."
    },
    srisailam: {
-      tickets: "Dharma Darshanam (Free), Seeghra Darshan (Rs.150), Athiseeghra (Rs.300), VIP Break (Rs.500).",
-      timings: "Mangala Arathi (4:30AM), Rudrabhishekam (6:30AM), Pallaki Seva (7PM).",
-      rules: "Located deep in Nallamala Forest. Forest gates CLOSE strictly at 9:00 PM and OPEN at 6:00 AM. Plan travel accordingly."
+      tickets: "Dharma Darshanam (Free), Seeghra (Rs.150), Athiseeghra (Rs.300), Sparsha Darshan (Rs.500 - touch the deity).",
+      pujas_sevas: "Mangala Arathi (4:30AM), Rudrabhishekam (6:30AM), Chandihomam, Navavarana Pooja, Pallaki Seva (7PM).",
+      festivals: "Maha Shivaratri (Grand Brahmotsavam), Kartheeka Masam (Nov/Dec), Ugadi.",
+      rules: "Forest gates (Mannanur/Dornala) strictly CLOSE 9PM-6AM. Physical contact with Jyotirlinga (Sparsha) requires traditional dress."
    },
    simhachalam: {
-      tickets: "Dharma Darshanam (Free), Special Ticket (Rs.100/300).",
-      timings: "Thiruvaradhana (5AM), Raja Bhogam (11AM), Pavallimpu Seva (8PM).",
-      rules: "Chandanotsavam in May is the only day the Lord is seen without Sandalwood paste. Massive crowds."
+      tickets: "Dharma Darshanam (Free), Special (Rs.100/300).",
+      pujas_sevas: "Thiruvaradhana (5AM), Nitya Kalyanotsavam, Raja Bhogam (11AM), Pavallimpu Seva (8PM).",
+      festivals: "Chandanotsavam (Akshaya Tritiya) - the only day for 'Nijaroopa' (sandalwood-free) view. Giripradakshina (32km walk around hill).",
+      rules: "Traditional dress recommended. Steps route (Madhavadhara) is approx 1000 steps. Free devasthanam shuttles from downhill."
    },
    annavaram: {
       tickets: "Dharma Darshanam (Free), Antaralayam (Rs.100), VIP (Rs.300).",
-      timings: "Pratahkala Pooja (6AM), Satyanarayana Vratam (Bacthes 8AM-12PM), Sayamkala Pooja (5PM).",
-      rules: "Famous for Vratam pooja done by couples. Batches start every early morning. Mandatory traditional dress for the Vratam."
+      pujas_sevas: "Sri Satyanarayana Swamy Vratam (Batches 6AM-5PM). Cost: Regular (Rs.500), Special (Rs.1500). Pratahkala Pooja (6AM).",
+      festivals: "Bheeshma Ekadasi, Annual Kalyanotsavam. Highly auspicious for wedding-related rituals.",
+      rules: "Traditional dress mandatory for Vratam pooja. Pampa river bath is traditional before hill ascent."
    },
    sabarimala: {
-      tickets: "Virtual Queue (Online Booking Mandatory). Pamba trek required.",
-      timings: "Palliyunarthal (3AM), Neyyabhishekam (4AM), Harivarasanam (11PM).",
-      rules: "41-day Vratham austerity is mandatory. Irumudikettu is required to climb the 18 Holy Steps (Pathinettampadi)."
+      tickets: "Virtual Queue (Online Mandatory). No spot booking. Irumudikettu required for 18 steps.",
+      pujas_sevas: "Neyyabhishekam (4AM-12PM), Padi Pooja, Usha Pooja, Harivarasanam (11PM closing).",
+      festivals: "Mandalapooja (Nov/Dec), Makara Vilakku (Makarajyothi sighting Jan 14/15), Vishu (April).",
+      rules: "41-day strictly celibacy/austerity period. Black/Blue/Saffron dress only. Barefoot trek (5km from Pamba)."
    }
 };
 

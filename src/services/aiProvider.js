@@ -13,7 +13,8 @@ const groq = hasValidKey ? new Groq({
  */
 export const callGroqAi = async ({ systemPrompt, userContext, userPrompt, model = "llama-3.3-70b-versatile" }) => {
     if (!groq) {
-        throw new Error("Groq AI Provider not initialized. Missing API Key.");
+        console.error("AI CRITICAL: Groq Provider failed to initialize. VITE_GROQ_API_KEY is missing from .env or is invalid.");
+        throw new Error("Sacred Grid connection failed: AI Provider not initialized. Please verify VITE_GROQ_API_KEY in your environment.");
     }
 
     try {

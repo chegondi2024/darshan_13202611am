@@ -23,7 +23,9 @@ const SACRED_KNOWLEDGE = {
   logistics: {
     ghat_road: 'Simhagiri Ghat Road is steep. Open 5 AM to 9 PM.',
     free_bus: 'Simhadri Free Bus operates from Downhill to Hilltop every 10 mins.',
-    trekking: 'Madhavadhara steps route (approx 1000 steps). Scenic but demands heart health.'
+    trekking: 'Madhavadhara steps route (approx 1000 steps). Scenic but demands heart health.',
+    sevas: 'Nitya Kalyanam, Ashtottaram, Sahasra Namarchana. Special Nijaroopa Darshan (Sandalwood removal) during Chandanotsavam.',
+    festivals: 'Chandanotsavam (Apr/May) is the primary festival. Giripradakshina (Full Moon day of Ashadha) involves a 32km walk around the hill.'
   }
 };
 
@@ -79,7 +81,13 @@ export const chatWithSimhachalamAi = async (prompt, status) => {
 
 const generateFallback = (text, status) => {
   return {
-    explanation: `Om Namo Narasimhaya. Simhachalam Sector 04 Link unstable. I am your Narasimha Mission Commander. Please refer to the tactical HUD for hill-transit telemetry.`,
-    visual_data: { type: 'GREETING', decision: 'GO' }
+    explanation: `Om Namo Narasimhaya. Simhachalam Sector 04 Mission Link is currently unstable due to a sacred grid disruption. I am your Narasimha Mission Commander. Tactical telemetry is still active on your HUD.`,
+    map_commands: [{ 
+      action: 'set_view', 
+      center: [17.7665, 83.2505], 
+      zoom: 17,
+      label: 'Sector 04 Hill Transit Status'
+    }],
+    visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' }
   };
 };

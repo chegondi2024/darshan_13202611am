@@ -29,7 +29,9 @@ const SACRED_KNOWLEDGE = {
   },
   logistics: {
     forest_gates: 'CRITICAL: Dornala and Mannanur gates CLOSE at 9:00 PM and OPEN at 6:00 AM. Wildlife sanctuary rules apply.',
-    anna_prasadam: 'Free meals provided near the main temple (11 AM to 10 PM).'
+    anna_prasadam: 'Free meals provided near the main temple (11 AM to 10 PM).',
+    sevas: 'Rudrabhishekam (Daily), Chandihomam, Navavarana Pooja. Sparsha Darshan (Touching the Jyotirlinga) available via Rs 500 ticket.',
+    festivals: 'Maha Shivaratri (Feb/Mar) is the grandest festival. Kartheeka Masam (Nov/Dec) and Ugadi are also major events with significant crowd inflow.'
   }
 };
 
@@ -85,9 +87,14 @@ export const chatWithSrisailamAi = async (prompt, status) => {
 };
 
 const generateFallback = (text, status) => {
-   // Minimal offline recovery logic
-   return { 
-      explanation: `Om Namah Shivaya. Srisailam Sector 03 Link unstable. I am your Forest Mission Commander. Please refer to the tactical HUD for live Forest Gate status.`, 
-      visual_data: { type: 'GREETING', decision: 'GO' } 
-   };
+  return { 
+    explanation: `Om Namah Shivaya. Srisailam Sector 03 Mission Link is currently unstable due to a sacred grid disruption. I am your Forest Mission Commander. Tactical telemetry is still active on your HUD.`, 
+    map_commands: [{ 
+      action: 'set_view', 
+      center: [16.0740, 78.8680], 
+      zoom: 17,
+      label: 'Sector 03 Forest Gate Status'
+    }],
+    visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' } 
+  };
 };

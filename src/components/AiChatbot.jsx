@@ -144,7 +144,11 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
       }
     } catch (error) {
       console.error("Chat Error:", error);
-      const recoveryMsg = `${currentIntel.mantra}. Primary Mission link unstable. Reconnecting to Sacred Grid...`;
+      const isConnectionError = error.message?.includes("Sacred Grid connection failed");
+      const recoveryMsg = isConnectionError 
+        ? `${currentIntel.mantra}. Critical Link Failure: ${error.message}. Please check your system configuration.`
+        : `${currentIntel.mantra}. Primary Mission link unstable. Reconnecting to Sacred Grid Hub ${currentIntel.code}...`;
+      
       setMessages(prev => [...prev, { 
         role: 'bot', 
         content: recoveryMsg,
@@ -327,7 +331,7 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
                       onClick={() => onFlyTo(cmd.points?.[0] || cmd.center, cmd.zoom || 17)}
                       className={`px-4 py-3 text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all flex items-center gap-2 shadow-lg active:scale-95 ${AURA_CONFIG[activeAura].primary}`}
                     >
-                      <Navigation size={14} /> {cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID'}
+                      <Navigation size={14} /> {cmd.label || (cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID')}
                     </button>
                   ))}
                 </div>

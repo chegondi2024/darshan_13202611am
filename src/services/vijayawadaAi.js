@@ -43,7 +43,8 @@ const SACRED_KNOWLEDGE = {
     free_bus: 'Free TTD/Devasthanam bus service from Durga Ghat (Hill base) to Hilltop Temple. Running every 10 mins.',
     lift: 'Lift facilities available for senior citizens and disabled to reach the main temple level.',
     anna_prasadam: 'Free meals (Annadanam) provided at the hilltop complex (10 AM to 10 PM).',
-    parking: 'Limited parking at hilltop. Recommend parking at PNBS or near Durga Ghat.'
+    parking: 'Limited parking at hilltop. Recommend parking at PNBS or near Durga Ghat.',
+    festivals: 'Dasara (Navaratri) is the main festival. Teppotsavam (Boat festival) occurs on the last day in the Krishna River. Shakambari festival is another major event where the deity is decorated with vegetables.'
   },
   // ⚠️ SACRED REALITY — HONEST BRIEFING
   brutal_reality: {
@@ -169,7 +170,13 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
   }
 
   return {
-    explanation: `${mantra}. Vijayawada Sector 02 Active. I am your tactical guide for Indrakeeladri Hill. Ask me about Darshan, Sevas, or routes from the Railway Station.`,
-    visual_data: { type: 'GREETING', decision: 'GO' }
+    explanation: `${mantra}. Vijayawada Sector 02 Mission Link is currently unstable due to a sacred grid disruption. I am your Indrakeeladri Mission Commander. Tactical telemetry is still active on your HUD.`,
+    map_commands: [{ 
+      action: 'set_view', 
+      center: [16.5153, 80.6050], 
+      zoom: 17,
+      label: 'Sector 02 Live Crowd Status'
+    }],
+    visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' }
   };
 };

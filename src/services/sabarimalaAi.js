@@ -22,7 +22,9 @@ const SACRED_KNOWLEDGE = {
   },
   trail_info: {
     main_route: 'Pamba → Neelimala → Appachimedu → Saramkuthi → Sannidhanam (5km steep trek).',
-    forest_route: 'Erumeli → Karimala → Pamba (Traditional 40km forest trek).'
+    forest_route: 'Erumeli → Karimala → Pamba (Traditional 40km forest trek).',
+    sevas: 'Neyyabhishekam (Ghee offering), Padi Pooja, Usha Pooja. Harivarasanam is the closing prayer.',
+    festivals: 'Mandalapooja and Makara Vilakku (Nov 15 - Jan 15) are the peak seasons. Makarajyothi sighting happens on Jan 14/15.'
   }
 };
 
@@ -71,8 +73,14 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
 };
 
 const generateFallback = (text, status) => {
-   return { 
-      explanation: `Swamiye Saranam Ayyappa. Sabarimala Sector 06 Link unstable. I am your Ayyappa Mission Commander. Please refer to the tactical HUD for trek-flow telemetry and Pamba status.`, 
-      visual_data: { type: 'GREETING', decision: 'GO' } 
-   };
+  return { 
+    explanation: `Swamiye Saranam Ayyappa. Sabarimala Sector 06 Mission Link is currently unstable due to a sacred grid disruption. I am your Ayyappa Mission Commander. Tactical telemetry is still active on your HUD.`, 
+    map_commands: [{ 
+      action: 'set_view', 
+      center: [9.4346, 77.0814], 
+      zoom: 17,
+      label: 'Sector 06 Trek-Flow Status'
+    }],
+    visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' } 
+  };
 };
