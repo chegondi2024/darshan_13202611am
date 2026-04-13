@@ -366,7 +366,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
 
          if (nodeA && nodeB) {
             return {
-               explanation: `Om Namo Venkatesaya. MISSION UPLINK UNSTABLE. Dynamic Path Synthesized: From ${nodeA.name} to ${nodeB.name}. Projecting tactical route.`,
+               explanation: `Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable. Dynamic Path Synthesized: From ${nodeA.name} to ${nodeB.name}. Projecting tactical route.`,
                map_commands: [{ action: "draw_route", points: [nodeA.coords, nodeB.coords], zoom: 15 }],
                visual_data: { type: "NAVIGATOR_HUB", decision: "GO" }
             };
@@ -444,7 +444,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
          }
 
          return {
-            explanation: `Om Namo Venkatesaya. MISSION UPLINK UNSTABLE. Local Tactical Briefing: ${advice}`,
+            explanation: `Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable. Local Tactical Briefing: ${advice}`,
             map_commands: commands,
             visual_data: { type: "NAVIGATOR_HUB", decision: "GO" }
          };
@@ -637,7 +637,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       if (text.includes('locker') || text.includes('pac')) {
          const pacs = status?.pac_lockers?.map(p => `${p.name}: ${p.count}`).join(', ');
          return {
-            explanation: `Om Namo Venkatesaya. MISSION UPLINK UNSTABLE. Local Telemetry Report: ${pacs || 'Syncing...'}`,
+            explanation: `Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable. Local Telemetry Report: ${pacs || 'Syncing...'}`,
             visual_data: { type: "RECOVERY_MODE", decision: "CAUTION" }
          };
       }

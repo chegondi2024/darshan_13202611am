@@ -147,7 +147,7 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
       const isConnectionError = error.message?.includes("Sacred Grid connection failed");
       const recoveryMsg = isConnectionError 
         ? `${currentIntel.mantra}. Critical Link Failure: ${error.message}. Please check your system configuration.`
-        : `${currentIntel.mantra}. Primary Mission link unstable. Reconnecting to Sacred Grid Hub ${currentIntel.code}...`;
+        : `${currentIntel.mantra}. ${currentIntel.name} Sector ${currentIntel.code} Mission Link is currently unstable due to a sacred grid disruption. I am your local Mission Commander. Tactical telemetry is still active on your HUD.`;
       
       setMessages(prev => [...prev, { 
         role: 'bot', 
