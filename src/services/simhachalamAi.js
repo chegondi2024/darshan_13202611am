@@ -86,7 +86,8 @@ const generateFallback = (text, status) => {
       action: 'set_view', 
       center: [17.7665, 83.2505], 
       zoom: 17,
-      label: 'Sector 04 Hill Transit Status'
+      label: 'Sector 04 Hill Transit Status',
+      id: 'temple'
     }],
     visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' }
   };

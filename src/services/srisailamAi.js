@@ -93,7 +93,8 @@ const generateFallback = (text, status) => {
       action: 'set_view', 
       center: [16.0740, 78.8680], 
       zoom: 17,
-      label: 'Sector 03 Forest Gate Status'
+      label: 'Sector 03 Forest Gate Status',
+      id: 'temple'
     }],
     visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' } 
   };

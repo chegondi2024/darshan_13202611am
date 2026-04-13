@@ -175,7 +175,8 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
       action: 'set_view', 
       center: [16.5153, 80.6050], 
       zoom: 17,
-      label: 'Sector 02 Live Crowd Status'
+      label: 'Sector 02 Live Crowd Status',
+      id: 'temple'
     }],
     visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' }
   };

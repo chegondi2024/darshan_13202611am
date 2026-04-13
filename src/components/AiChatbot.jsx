@@ -325,15 +325,21 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
               </div>
               {msg.map_commands?.length > 0 && (
                 <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar py-2">
-                  {msg.map_commands.map((cmd, idx) => (
-                    <button 
-                      key={idx}
-                      onClick={() => onFlyTo(cmd.points?.[0] || cmd.center, cmd.zoom || 17)}
-                      className={`px-4 py-3 text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all flex items-center gap-2 shadow-lg active:scale-95 ${AURA_CONFIG[activeAura].primary}`}
-                    >
-                      <Navigation size={14} /> {cmd.label || (cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID')}
-                    </button>
-                  ))}
+                  {msg.map_commands.map((cmd, idx) => {
+                     const SECTOR_COORDS = { tirupati: [13.6833, 79.3474], vijayawada: [16.5150, 80.6050], srisailam: [16.0740, 78.8680], simhachalam: [17.7665, 83.2505], annavaram: [17.2810, 82.3960], sabarimala: [9.4346, 77.0814] };
+                     const finalCenter = cmd.points?.[0] || cmd.center || SECTOR_COORDS[sector] || [13.6833, 79.3474];
+                     return (
+                     <button 
+                       key={idx}
+                       onClick={(e) => {
+                         e.preventDefault();
+                         onFlyTo(finalCenter, cmd.zoom || 15, cmd.id || 'temple', cmd.label || 'Sector Scan');
+                       }}
+                       className={`px-4 py-3 text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all flex items-center gap-2 shadow-lg active:scale-95 ${AURA_CONFIG[activeAura].primary}`}
+                     >
+                       <Navigation size={14} /> {cmd.label ? cmd.label.replace(/ststus/i, 'Status').toUpperCase() : (cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID')}
+                     </button>
+                   )})}
                 </div>
               )}
             </div>

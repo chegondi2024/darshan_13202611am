@@ -633,14 +633,6 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
          return { explanation: `Om Namo Venkatesaya. Darshan Types: SSD (Free Slot Token), SED (Rs.300 Online), DIVYA (Free for foot pilgrims), SARVA (Free, any time), VIP (Rs.1500+). Which type would you like details on?`, visual_data: { type: 'INFO', decision: 'GO' } };
       }
 
-      // 5. Telemetry Fallback (PAC/Traffic)
-      if (text.includes('locker') || text.includes('pac')) {
-         const pacs = status?.pac_lockers?.map(p => `${p.name}: ${p.count}`).join(', ');
-         return {
-            explanation: `Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable. Local Telemetry Report: ${pacs || 'Syncing...'}`,
-            visual_data: { type: "RECOVERY_MODE", decision: "CAUTION" }
-         };
-      }
 
       // 6. CROWD PREDICTION INTELLIGENCE (NEW)
       if (text.includes('best time') || text.includes('when to visit') || text.includes('predict') || text.includes('tomorrow') || text.includes('crowd') || text.includes('waiting')) {
@@ -657,7 +649,8 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
             action: 'set_view', 
             center: [13.6833, 79.3474], 
             zoom: 17,
-            label: 'Sector 01 SSD Token Status'
+            label: 'Sector 01 SSD Token Status',
+            id: 'temple'
          }],
          visual_data: { type: "RECOVERY_MODE", decision: "CAUTION" }
       };

@@ -71,7 +71,8 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
           action: 'set_view', 
           center: [17.2815, 82.3965], 
           zoom: 17,
-          label: 'Vratam Live Crowd Status'
+          label: 'Vratam Live Crowd Status',
+          id: 'vratam_hall'
         });
       }
     }
@@ -90,7 +91,8 @@ const generateFallback = (text, status) => {
       action: 'set_view', 
       center: [17.2815, 82.3965], 
       zoom: 17,
-      label: 'Vratam Live Crowd Status'
+      label: 'Vratam Live Crowd Status',
+      id: 'vratam_hall'
     }],
     visual_data: { type: 'RECOVERY', decision: 'CAUTION' }
   };

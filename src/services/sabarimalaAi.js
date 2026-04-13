@@ -79,7 +79,8 @@ const generateFallback = (text, status) => {
       action: 'set_view', 
       center: [9.4346, 77.0814], 
       zoom: 17,
-      label: 'Sector 06 Trek-Flow Status'
+      label: 'Sector 06 Trek-Flow Status',
+      id: 'sanctum'
     }],
     visual_data: { type: 'RECOVERY_MODE', decision: 'CAUTION' } 
   };
