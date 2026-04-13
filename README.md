@@ -50,9 +50,4 @@ npm run dev
 ```
 
 ---
-
-## 📜 License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
----
 **Created by Antigravity AI for Sacred Pilgrimage Intelligence.**
