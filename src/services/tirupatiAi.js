@@ -32,6 +32,11 @@ const SACRED_KNOWLEDGE = {
       'DIVYA': 'Divya Darshan. 100% FREE. Only for foot pilgrims who climb Alipiri (3550 steps) or Srivari Mettu. No booking needed. [Wait: Variable based on climb].',
       'SARVA': 'Free Sarvadarshan for ALL pilgrims. No ticket. No booking. Direct queue at VQC. [Wait: Synchronized via Live Telemetry].',
       'VIP': 'VIP / Seva Pass / Donor Pass (Rs.1500+). Entry near Mahadwaram. [Wait: Minimum walk-in]. Book at TTD counters only.',
+      'SRIVANI': 'SRIVANI Trust VIP Break Darshan. Requires Rs. 10,000 donation to trust + Rs. 500 ticket cost. Direct fast-track entry.',
+      'VIRTUAL': 'Virtual Seva Darshan. Participate in Sevas online and get Rs. 300 equivalent Darshan entry within 1 year.',
+      'SUPADHAM_INFANT': 'Infant Darshan (Under 1 Year). Entry through Supadham. FREE for parents and siblings under 12. No online booking, bring Age Proof.',
+      'SUPADHAM_NRI': 'NRI & Defense Personnel Darshan. Entry via Supadham. Rs. 300 ticket purchased on spot. Bring original Passport/Visa or Military ID.',
+      'ANGAPRADAKSHINAM': 'Angapradakshinam (Rolling around sanctum). Free tokens issued at 2:00 PM the day before at CRO Tirumala. Wet clothes mandatory.',
       'SUPRABHATA': 'Suprabhata Seva: Early morning 3AM. Ticket: Rs.500. Online booking mandatory. Limited 90 seats.',
       'THOMALA': 'Thomala Seva: 3:30AM. Flower garland offering. Rs.500.',
       'KALYANOTSAVAM': 'Sacred Marriage of the Lord. Daily 10AM. Rs.750. Couples allowed.'
@@ -625,12 +630,16 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       }
 
       // 4. Darshan type definitions
-      if (text.includes('what is') || text.includes('tell me about') || text.includes('ssd') || text.includes('sed') || text.includes('divya') || text.includes('sarva') || text.includes('suprabhata') || text.includes('seva')) {
+      if (text.includes('what is') || text.includes('tell me about') || text.includes('ssd') || text.includes('sed') || text.includes('divya') || text.includes('sarva') || text.includes('suprabhata') || text.includes('seva') || text.includes('infant') || text.includes('nri') || text.includes('virtual') || text.includes('srivani') || text.includes('supadham') || text.includes('angapradakshinam')) {
          for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
-            if (text.includes(key.toLowerCase())) return { explanation: `Om Namo Venkatesaya. Sacred Briefing: ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
+            // Need to match partial keys for 'SUPADHAM_INFANT' etc.
+            const searchKey = key.split('_').join(' ').toLowerCase();
+            if (text.includes(searchKey) || (key === 'SUPADHAM_INFANT' && text.includes('infant')) || (key === 'SUPADHAM_NRI' && text.includes('nri'))) {
+               return { explanation: `Om Namo Venkatesaya. Sacred Briefing: ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
+            }
          }
          // General darshan info if no specific type matched
-         return { explanation: `Om Namo Venkatesaya. Darshan Types: SSD (Free Slot Token), SED (Rs.300 Online), DIVYA (Free for foot pilgrims), SARVA (Free, any time), VIP (Rs.1500+). Which type would you like details on?`, visual_data: { type: 'INFO', decision: 'GO' } };
+         return { explanation: `Om Namo Venkatesaya. Darshan Types: SSD (Free Slot Token), SED (Rs.300 Online), DIVYA (Foot Pilgrims), SARVA (Walk-in), SRIVANI (Trust VIP), VIRTUAL (Online Seva), SUPADHAM (Infant/NRI), ANGAPRADAKSHINAM. Which type would you like details on?`, visual_data: { type: 'INFO', decision: 'GO' } };
       }
 
 
