@@ -1,5 +1,7 @@
 # Darshanam AI | Universal Sacred Command Center 🛰️🕉️🏛️
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/chegondi2024/Temple-Darshan)
+
 **Darshanam AI** is a professional-grade, full-stack pilgrimage intelligence suite designed for the modern devotee. It provides real-time crowd scanning via AI computer vision, live telemetry across six major sacred hubs, and a persistent PostgreSQL historical record for pilgrimage tracking.
 
 ## 🚀 Key Features
