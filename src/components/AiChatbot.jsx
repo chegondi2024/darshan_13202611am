@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, User, Bot, MapPin, Crosshair, 
-  ChevronRight, Languages, Mic, CheckCircle, 
+  ChevronRight, Languages, Mic, CheckCircle, UserCheck,
   AlertCircle, Info, AlertTriangle, Zap,
   History, Sparkles, Gauge, Award, TrendingDown, 
   Navigation, Clock, PlayCircle, ShoppingBag, 
@@ -62,6 +62,7 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
   const [locationStatus, setLocationStatus] = useState('idle'); // idle | loading | found | error
   const scrollRef = useRef(null);
 
+  const [voiceGender, setVoiceGender] = useState('male'); // 'male' or 'female'
   const [autoSpeak, setAutoSpeak] = useState(true);
   const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
@@ -107,22 +108,48 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // 🌍 MISSION LANGUAGE ADAPTATION
+    // 🌍 LOCALIZED INDIAN VOICE SELECTION ENGINE
+    const findIndianVoice = (langCode, gender) => {
+      const isFemale = gender === 'female';
+      const locales = [langCode + '-IN', langCode];
+      
+      // Rank 1: Precise Locale + Gender Keywords
+      let match = availableVoices.find(v => 
+        locales.some(l => v.lang.toLowerCase() === l.toLowerCase()) && 
+        (isFemale ? /female|woman|girl|heera|pallavi|siri/i.test(v.name) : /male|man|boy|david|rishi/i.test(v.name))
+      );
+      
+      // Rank 2: Precise Locale Only
+      if (!match) {
+        match = availableVoices.find(v => locales.some(l => v.lang.toLowerCase() === l.toLowerCase()));
+      }
+      
+      // Rank 3: Search via Name Keywords if Locale fails
+      if (!match) {
+        match = availableVoices.find(v => v.name.toLowerCase().includes(langCode) || v.lang.toLowerCase().startsWith(langCode));
+      }
+
+      return match;
+    };
+
     const voiceMap = {
-      hi: availableVoices.find(v => v.lang.startsWith('hi') && v.name.includes('Google')) || 
-          availableVoices.find(v => v.lang.startsWith('hi')),
-      te: availableVoices.find(v => v.lang.startsWith('te') && v.name.includes('Google')) || 
-          availableVoices.find(v => v.lang.startsWith('te')),
-      en: availableVoices.find(v => v.name.includes('Microsoft') && v.name.includes('David')) || 
-          availableVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
-          availableVoices.find(v => v.lang.startsWith('en'))
+      hi: findIndianVoice('hi', voiceGender),
+      te: findIndianVoice('te', voiceGender),
+      en: findIndianVoice('en', voiceGender)
     };
 
     utterance.voice = voiceMap[selectedLang] || selectedVoice;
     utterance.lang = selectedLang === 'hi' ? 'hi-IN' : selectedLang === 'te' ? 'te-IN' : 'en-IN';
 
-    utterance.pitch = 0.95; // Authoritative, slightly deeper
-    utterance.rate = 1.05; // Efficient pace
+    // 🎙️ PERSONA TUNING
+    if (voiceGender === 'female') {
+       utterance.pitch = 1.05; // Natural female pitch
+       utterance.rate = 1.0;
+    } else {
+       utterance.pitch = 0.92; // Authoritative male commander
+       utterance.rate = 1.05;
+    }
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -251,6 +278,24 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
             </div>
 
             <div className="flex items-center gap-3 relative z-10">
+               {/* 🎙️ GENDER PERSONA TOGGLE */}
+               <div className="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                  <button 
+                    onClick={() => setVoiceGender('male')}
+                    className={`p-1.5 rounded-lg transition-all ${voiceGender === 'male' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}
+                    title="Mission Commander (Male Voice)"
+                  >
+                    <User size={14} />
+                  </button>
+                  <button 
+                    onClick={() => setVoiceGender('female')}
+                    className={`p-1.5 rounded-lg transition-all ${voiceGender === 'female' ? 'bg-white shadow-sm text-pink-600' : 'text-slate-400 hover:text-slate-600'}`}
+                    title="Mission Overseer (Female Voice)"
+                  >
+                    <UserCheck size={14} />
+                  </button>
+               </div>
+
                <div className="flex gap-2 bg-slate-100/50 p-1.5 rounded-full border border-slate-200/50">
                   {Object.entries(AURA_CONFIG).map(([key, aura]) => (
                      <button 
