@@ -14,7 +14,9 @@ const SACRED_KNOWLEDGE = {
   darshan: {
     free: 'Dharma Darshanam. Hilltop entry. [Wait: Synchronized via Live Telemetry].',
     special: 'Rs. 100 / Rs. 300 tickets available for faster access. [Wait: Synchronized via Live Telemetry].',
-    chandanotsavam: 'CRITICAL: Annual Nijaroopa Darshanam occurs on Akshaya Tritiya (April/May). The ONLY day to see the deity without the sandalwood cover.'
+    chandanotsavam: 'CRITICAL: Annual Nijaroopa Darshanam occurs on Akshaya Tritiya. The ONLY day to see the deity without the sandalwood cover.',
+    senior_priority: 'Separate entry for seniors (65+) and differently-abled near the main mandapam. Use official Devasthanam shuttles for hilltop access.',
+    infant_priority: 'Parents with infants (under 1 year) are given priority in the special darshan queue.'
   },
   chandanotsavam_intel: {
     'NIJAROOPA': 'Lord Varaha Lakshmi Narasimha Swamy is seen in his original form. For the rest of the year, he is covered in 4 layers of sandalwood paste.',
@@ -44,6 +46,7 @@ export const chatWithSimhachalamAi = async (prompt, status) => {
     SACRED MANDATE: EVERY response MUST start with "Om Namo Narasimhaya".
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical intelligence for the Varaha Lakshmi Narasimha mission.
+    SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority or Chandanotsavam requirements. Use the KNOWLEDGE base to provide precise tactical briefings.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -66,10 +69,19 @@ export const chatWithSimhachalamAi = async (prompt, status) => {
       userPrompt: prompt
     });
 
-    if (text.includes('hill') || text.includes('climb')) {
+    if (text.includes('hill') || text.includes('climb') || text.includes('bus') || text.includes('shuttle') || text.includes('transit')) {
       if (response.map_commands && response.map_commands.length === 0) {
         response.map_commands.push({ action: 'set_view', center: [17.7665, 83.2505], zoom: 17 });
       }
+    }
+    
+    if (text.includes('darshan') || text.includes('nijaroopa') || text.includes('akshaya tritiya') || text.includes('infant')) {
+       for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
+          const searchKey = key.split('_').join(' ').toLowerCase();
+          if (text.includes(searchKey) || (key === 'infant_priority' && text.includes('infant'))) {
+             return { ...response, explanation: `Om Namo Narasimhaya. Sacred Briefing: ${val}` };
+          }
+       }
     }
 
     return response;

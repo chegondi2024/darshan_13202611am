@@ -20,7 +20,9 @@ const SACRED_KNOWLEDGE = {
     dharma: 'Free Dharma Darshanam. Queue starts near Durga Ghat. [Wait: Synchronized via Live Telemetry].',
     mukhamandapam: 'Rs. 100 ticket. Faster entry through Mukha Mandapam. [Wait: Synchronized via Live Telemetry].',
     antaralayam: 'Rs. 300 / Rs. 500 ticket. Closest darshan to the deity. Highly restricted slots.',
-    swarupa: 'VVIP / Protocol Darshan for special guests and donors.'
+    swarupa: 'VVIP / Protocol Darshan for special guests and donors.',
+    senior_citizen_prioroty: 'FREE lift access and separate queue for seniors (65+). Arrive at the hilltop lift area with ID Proof.',
+    infant_entry: 'Parents with infants (under 1 year) are prioritized in the Mukhamandapam line.'
   },
   bhavani_deeksha: {
     'MALA_DHARANA': '41-day austerity period (Mandala Deeksha) or 21-day (Ardh Mandala). Red clothing mandatory.',
@@ -79,6 +81,7 @@ export const chatWithVijayawadaAi = async (prompt, status) => {
       CRITICAL RULE: EVERY response/explanation MUST start with the appropriate sacred mantra: "${mantra}".
       MISSION DATA: Use the provided [PROJECT DNA] to answer technical questions about your capabilities (heartbeat, scraping, multiple auras, etc.).
       MULTILINGUAL MANDATE: If the user query includes a [LANGUAGE:X] directive, you MUST respond entirely in that language (Hindi/Telugu/English) using the appropriate regional script.
+      SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior Citizen lifts, Infant priority, or NRI protocols. Use the KNOWLEDGE base to provide precise tactical briefings.
       Provide tactical, honest, mission-ready advice. Always return JSON.
       
       FORMAT (JSON):
@@ -149,8 +152,14 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
     };
   }
 
-  if (text.includes('darshan') || text.includes('ticket')) {
-    return { explanation: `Tactical Briefing: Dharma (Free): ${sk.darshan.dharma} | Mukhamandapam (100): ${sk.darshan.mukhamandapam} | Antaralayam (300): ${sk.darshan.antaralayam}`, visual_data: { type: 'INFO', decision: 'GO' } };
+  if (text.includes('darshan') || text.includes('ticket') || text.includes('mukhamandapam') || text.includes('antaralayam') || text.includes('infant')) {
+    for (const [key, val] of Object.entries(sk.darshan)) {
+       const searchKey = key.split('_').join(' ').toLowerCase();
+       if (text.includes(searchKey) || (key === 'infant_entry' && text.includes('infant'))) {
+          return { explanation: `Om Namo Durgaye. Sacred Briefing: ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
+       }
+    }
+    return { explanation: `Tactical Briefing: Dharma (Free): ${sk.darshan.dharma} | Mukhamandapam (100): ${sk.darshan.mukhamandapam} | Antaralayam (300): ${sk.darshan.antaralayam}. Which briefing do you require?`, visual_data: { type: 'INFO', decision: 'GO' } };
   }
 
   if (text.includes('route') || text.includes('how to go') || text.includes('navigation')) {

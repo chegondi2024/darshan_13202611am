@@ -18,7 +18,9 @@ const SACRED_KNOWLEDGE = {
   },
   darshan_types: {
     free_darshan: 'General queue. [Wait: Synchronized via Live Telemetry].',
-    virtual_queue: 'Priority slot booking. [Wait: Synchronized via Live Telemetry]. Verification at Pamba.'
+    virtual_queue: 'Priority slot booking. [Wait: Synchronized via Live Telemetry]. Verification at Pamba.',
+    senior_citizen_prioroty: 'Dedicated queue segment for seniors (60+) and differently-abled at Pamba and Sannidhanam. Stretcher/Dolly services available.',
+    infant_priority: 'Parents with infants (under 2 years) are given priority in the Sahaya Desk queue at Pamba.'
   },
   trail_info: {
     main_route: 'Pamba → Neelimala → Appachimedu → Saramkuthi → Sannidhanam (5km steep trek).',
@@ -43,6 +45,7 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
     SACRED MANDATE: EVERY response MUST start with "Swamiye Saranam Ayyappa".
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical intelligence for the Lord Ayyappa mission.
+    SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority, Virtual Q requirements, or Irumudi protocols. Use the KNOWLEDGE base to provide precise tactical briefings.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -64,6 +67,24 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
       userContext: context,
       userPrompt: prompt
     });
+
+    if (text.includes('trek') || text.includes('path') || text.includes('climb') || text.includes('distance')) {
+       if (response.map_commands && response.map_commands.length === 0) {
+          response.map_commands.push({ action: 'draw_route', points: [[9.3804, 77.0022], [9.4000, 77.0400], [9.4346, 77.0814]], zoom: 14 });
+       }
+    }
+
+    if (text.includes('darshan') || text.includes('virtual') || text.includes('irumudi') || text.includes('senior') || text.includes('infant')) {
+       for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan_types)) {
+          const searchKey = key.split('_').join(' ').toLowerCase();
+          if (text.includes(searchKey) || (key === 'infant_priority' && text.includes('infant'))) {
+             return { ...response, explanation: `Swamiye Saranam Ayyappa. Sacred Briefing: ${val}` };
+          }
+       }
+       if (text.includes('irumudi')) {
+          return { ...response, explanation: `Swamiye Saranam Ayyappa. Ritual Protocol: ${SACRED_KNOWLEDGE.pilgrimage_rules.irumudikettu}` };
+       }
+    }
 
     return response;
   } catch (e) {

@@ -15,11 +15,12 @@ const SACRED_KNOWLEDGE = {
     description: 'Sri Satyanarayana Swamy Vratam. The core pilgrimage ritual for family prosperity.',
     timings: 'Daily 6:00 AM to 5:00 PM. Batches start every 30-45 mins. [Wait: Synchronized via Live Telemetry].',
     cost: 'Special (Rs. 1500), Regular (Rs. 500), Special Premium (Rs. 2000).',
-    materials: 'Devasthanam provides generic setup.'
+    senior_vratam: 'Senior citizens (65+) can avail a dedicated seating area in the Vratam halls for comfort.'
   },
   darshan: {
     free: 'Sarva Darshan. Hilltop entry. [Wait: Synchronized via Live Telemetry].',
-    special: 'Antaralaya Darshan (Rs. 100-200). Allows entry into the inner sanctum.'
+    special: 'Antaralaya Darshan (Rs. 100-200). Allows entry into the inner sanctum.',
+    infant_priority: 'Parents with infants (under 1 year) are given priority access to the darshan queue after Vratam.'
   },
   logistics: {
     ghat_road: 'Ratnagiri Hill road (3km). Open 5 AM - 10 PM. Toll: Rs. 100 per car.',
@@ -43,6 +44,7 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
     SACRED MANDATE: EVERY response MUST start with "Om Namo Satyanarayanaya".
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical intelligence for the Satyanarayana Swamy Vratam mission.
+    SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority or Vratam batch requirements. Use the KNOWLEDGE base to provide precise tactical briefings.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -65,7 +67,15 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
       userPrompt: prompt
     });
 
-    if (text.includes('vratam') || text.includes('pooja') || text.includes('crowd')) {
+    if (text.includes('vratam') || text.includes('pooja') || text.includes('crowd') || text.includes('infant') || text.includes('senior')) {
+      for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.vratam)) {
+          if (text.includes(key.toLowerCase())) return { ...response, explanation: `Om Namo Satyanarayanaya. Vratam Briefing: ${val}` };
+      }
+      for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
+          if (text.includes(key.toLowerCase()) || (key === 'infant_priority' && text.includes('infant'))) {
+             return { ...response, explanation: `Om Namo Satyanarayanaya. Darshan Briefing: ${val}` };
+          }
+      }
       if (response.map_commands && response.map_commands.length === 0) {
         response.map_commands.push({ 
           action: 'set_view', 

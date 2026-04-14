@@ -16,7 +16,9 @@ const SACRED_KNOWLEDGE = {
     free: 'Dharma Darshanam. General queue. [Wait: Synchronized via Live Telemetry].',
     seeghra: 'Rs. 150 ticket. Faster access. [Wait: Synchronized via Live Telemetry].',
     athiseeghra: 'Rs. 300 ticket. Minimal wait. High priority entry.',
-    sparsha: 'Rs. 500 ticket. Allows physical contact (Sparsha) with the Jyotirlinga (Traditional dress mandatory).'
+    sparsha: 'Rs. 500 ticket. Allows physical contact (Sparsha) with the Jyotirlinga. MANDATORY: Traditional dress code (Dhoti/Saree).',
+    senior_citizen: 'Priority entry via a separate queue line. Requires Aadhar/Age proof. Wheelchairs available at primary waypoint.',
+    infant_entry: 'Parents with infants (under 1 year) allowed via separate shortcut entry point.'
   },
   dual_significance: {
     'JYOTIRLINGA': 'One of the 12 sacred Jyotirlingas of Lord Shiva (Mallikarjuna Swamy).',
@@ -50,6 +52,7 @@ export const chatWithSrisailamAi = async (prompt, status) => {
     SACRED MANDATE: EVERY response MUST start with "Om Namah Shivaya".
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical, forest-aware intelligence for the Bhramaramba Mallikarjuna mission.
+    SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority or Sparsha requirements. Use the KNOWLEDGE base to provide precise tactical briefings.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -76,6 +79,18 @@ export const chatWithSrisailamAi = async (prompt, status) => {
     if (text.includes('pathala ganga') || text.includes('ropeway')) {
        if (response.map_commands && response.map_commands.length === 0) {
           response.map_commands.push({ action: 'set_view', center: [16.0820, 78.8750], zoom: 17 });
+       }
+    }
+    
+    if (text.includes('darshan') || text.includes('sparsha') || text.includes('gate') || text.includes('infant')) {
+       for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
+          const searchKey = key.split('_').join(' ').toLowerCase();
+          if (text.includes(searchKey) || (key === 'infant_entry' && text.includes('infant'))) {
+             return { ...response, explanation: `Om Namah Shivaya. Sacred Briefing: ${val}` };
+          }
+       }
+       if (text.includes('gate') || text.includes('forest') || text.includes('road')) {
+          return { ...response, explanation: `Om Namah Shivaya. Forest Gate Alert: ${SACRED_KNOWLEDGE.logistics.forest_gates}` };
        }
     }
 
