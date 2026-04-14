@@ -41,6 +41,12 @@ const SACRED_KNOWLEDGE = {
     khadgamala: 'Recitation of Khadgamala Stotram while performing archana. Powerful ritual.',
     chandi_homam: 'Grand ritual performed for protection and prosperity. Usually 8:30 AM.'
   },
+  prasadam_intelligence: {
+    'FLAGSHIP': 'Pulihora (Tamarind Rice) and Laddu. Highly rated for quality.',
+    'PAID': 'Laddu: Rs. 20 each. Pulihora: Rs. 10 per packet.',
+    'LOCATION': 'Prasadam counters are located near the exit gate of the hilltop complex. [Wait: Synchronized via Live Telemetry].',
+    'FREE': 'Anna Prasadam (Meals) provided at the dedicated Annadana Hall.'
+  },
   logistics: {
     free_bus: 'Free TTD/Devasthanam bus service from Durga Ghat (Hill base) to Hilltop Temple. Running every 10 mins.',
     lift: 'Lift facilities available for senior citizens and disabled to reach the main temple level.',
@@ -162,6 +168,14 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
        }
     }
     return { explanation: `Tactical Briefing: Dharma (Free): ${sk.darshan.dharma} | Mukhamandapam (100): ${sk.darshan.mukhamandapam} | Antaralayam (300): ${sk.darshan.antaralayam}. Which briefing do you require?`, visual_data: { type: 'INFO', decision: 'GO' } };
+  }
+
+  if (text.includes('laddu') || text.includes('prasadam') || text.includes('pulihora') || text.includes('sweet')) {
+     const pi = sk.prasadam_intelligence;
+     return { 
+        explanation: `Om Namo Durgaye. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+        visual_data: { type: 'PRIME', decision: 'GO' }
+     };
   }
 
   if (text.includes('route') || text.includes('how to go') || text.includes('navigation')) {

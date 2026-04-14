@@ -29,6 +29,12 @@ const SACRED_KNOWLEDGE = {
     'ROPEWAY': 'Starts from Haritha Hotel. Efficient for avoiding the 500+ step descent. 6 AM to 6 PM.',
     'SACRED_DIP': 'Taking a dip in the Krishna River backwaters (Pathala Ganga) is said to wash away all sins.'
   },
+  prasadam_intelligence: {
+    'FLAGSHIP': 'Srisaila Laddu. Freshly prepared daily.',
+    'PAID': 'Laddu: Rs. 20 each. Special packets available at counters.',
+    'LOCATION': 'Prasadam counters are near the main entrance (Gopuram) area. [Wait: Synchronized via Live Telemetry].',
+    'FREE': 'Anna Prasadam (Annadanam) is served near the temple complex.'
+  },
   logistics: {
     forest_gates: 'CRITICAL: Dornala and Mannanur gates CLOSE at 9:00 PM and OPEN at 6:00 AM. Wildlife sanctuary rules apply.',
     anna_prasadam: 'Free meals provided near the main temple (11 AM to 10 PM).',
@@ -84,7 +90,7 @@ export const chatWithSrisailamAi = async (prompt, status) => {
        }
     }
     
-    if (text.includes('darshan') || text.includes('sparsha') || text.includes('gate') || text.includes('infant')) {
+    if (text.includes('darshan') || text.includes('sparsha') || text.includes('gate') || text.includes('infant') || text.includes('laddu') || text.includes('prasadam')) {
        for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
           const searchKey = key.split('_').join(' ').toLowerCase();
           if (text.includes(searchKey) || (key === 'infant_entry' && text.includes('infant'))) {
@@ -93,6 +99,14 @@ export const chatWithSrisailamAi = async (prompt, status) => {
        }
        if (text.includes('gate') || text.includes('forest') || text.includes('road')) {
           return { ...response, explanation: `Om Namah Shivaya. Forest Gate Alert: ${SACRED_KNOWLEDGE.logistics.forest_gates}` };
+       }
+       if (text.includes('laddu') || text.includes('prasadam')) {
+          const pi = SACRED_KNOWLEDGE.prasadam_intelligence;
+          return { 
+             ...response,
+             explanation: `Om Namah Shivaya. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}. Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+             visual_data: { type: 'PRIME', decision: 'GO' }
+          };
        }
     }
 

@@ -22,6 +22,12 @@ const SACRED_KNOWLEDGE = {
     'NIJAROOPA': 'Lord Varaha Lakshmi Narasimha Swamy is seen in his original form. For the rest of the year, he is covered in 4 layers of sandalwood paste.',
     'PROCESS': 'Lakhs of devotees attempt the climb. Direct vehicles to hilltop are BANNED on this day. Use official Devasthanam shuttles only.'
   },
+  prasadam_intelligence: {
+    'FLAGSHIP': 'Simhagiri Laddu (Big/Small). Known for the unique aroma of camphor.',
+    'PAID': 'Small Laddu: Rs. 20. Big Laddu: Rs. 100.',
+    'LOCATION': 'Prasadam counters are near the main kalyana mandapam exit. [Wait: Synchronized via Live Telemetry].',
+    'FREE': 'Anna Prasadam served daily at the downhill complex.'
+  },
   logistics: {
     ghat_road: 'Simhagiri Ghat Road is steep. Open 5 AM to 9 PM.',
     free_bus: 'Simhadri Free Bus operates from Downhill to Hilltop every 10 mins.',
@@ -84,6 +90,15 @@ export const chatWithSimhachalamAi = async (prompt, status) => {
              return { ...response, explanation: `Om Namo Narasimhaya. Sacred Briefing: ${val}` };
           }
        }
+    }
+
+    if (text.includes('laddu') || text.includes('prasadam') || text.includes('sweet')) {
+       const pi = SACRED_KNOWLEDGE.prasadam_intelligence;
+       return { 
+          ...response,
+          explanation: `Om Namo Narasimhaya. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}. Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+          visual_data: { type: 'PRIME', decision: 'GO' }
+       };
     }
 
     return response;

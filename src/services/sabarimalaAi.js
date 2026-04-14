@@ -22,6 +22,12 @@ const SACRED_KNOWLEDGE = {
     senior_citizen_prioroty: 'Dedicated queue segment for seniors (60+) and differently-abled at Pamba and Sannidhanam. Stretcher/Dolly services available.',
     infant_priority: 'Parents with infants (under 2 years) are given priority in the Sahaya Desk queue at Pamba.'
   },
+  prasadam_intelligence: {
+    'FLAGSHIP': 'Aravana Payasam and Appam. The mandatory sacred sweets of the Ayyappa pilgrimage.',
+    'PAID': 'Aravana: Rs. 80 per tin. Appam: Rs. 40 per packet.',
+    'LOCATION': 'Prasadam counters are at the Sannidhanam, near the main shrine exit. [Wait: Synchronized via Live Telemetry].',
+    'FREE': 'Small portion of Appam/Aravana is often distributed as part of Seva activities.'
+  },
   trail_info: {
     main_route: 'Pamba → Neelimala → Appachimedu → Saramkuthi → Sannidhanam (5km steep trek).',
     forest_route: 'Erumeli → Karimala → Pamba (Traditional 40km forest trek).',
@@ -76,7 +82,7 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
        }
     }
 
-    if (text.includes('darshan') || text.includes('virtual') || text.includes('irumudi') || text.includes('senior') || text.includes('infant')) {
+    if (text.includes('darshan') || text.includes('virtual') || text.includes('irumudi') || text.includes('senior') || text.includes('infant') || text.includes('laddu') || text.includes('prasadam') || text.includes('aravana') || text.includes('appam')) {
        for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan_types)) {
           const searchKey = key.split('_').join(' ').toLowerCase();
           if (text.includes(searchKey) || (key === 'infant_priority' && text.includes('infant'))) {
@@ -85,6 +91,14 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
        }
        if (text.includes('irumudi')) {
           return { ...response, explanation: `Swamiye Saranam Ayyappa. Ritual Protocol: ${SACRED_KNOWLEDGE.pilgrimage_rules.irumudikettu}` };
+       }
+       if (text.includes('laddu') || text.includes('prasadam') || text.includes('aravana') || text.includes('appam')) {
+          const pi = SACRED_KNOWLEDGE.prasadam_intelligence;
+          return { 
+             ...response,
+             explanation: `Swamiye Saranam Ayyappa. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}. Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+             visual_data: { type: 'PRIME', decision: 'GO' }
+          };
        }
     }
 

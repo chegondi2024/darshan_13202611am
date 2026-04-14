@@ -22,6 +22,12 @@ const SACRED_KNOWLEDGE = {
     special: 'Antaralaya Darshan (Rs. 100-200). Allows entry into the inner sanctum.',
     infant_priority: 'Parents with infants (under 1 year) are given priority access to the darshan queue after Vratam.'
   },
+  prasadam_intelligence: {
+    'FLAGSHIP': 'Annavaram Satyanarayana Swamy Wheat Rava Prasadam. Considered one of the most sacred sweets in Andhra Pradesh.',
+    'PAID': 'Standard Packet: Rs. 20. Large Tin: Rs. 250.',
+    'LOCATION': 'Prasadam counters are near the VQC exits and at the hill-top main office. [Wait: Synchronized via Live Telemetry].',
+    'FREE': 'Small portion given for free at the end of each Vratam Batch.'
+  },
   logistics: {
     ghat_road: 'Ratnagiri Hill road (3km). Open 5 AM - 10 PM. Toll: Rs. 100 per car.',
     steps: 'Traditional stone stairway (460 steps).',
@@ -69,7 +75,7 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
       userPrompt: prompt
     });
 
-    if (text.includes('vratam') || text.includes('pooja') || text.includes('crowd') || text.includes('infant') || text.includes('senior')) {
+    if (text.includes('vratam') || text.includes('pooja') || text.includes('crowd') || text.includes('infant') || text.includes('senior') || text.includes('laddu') || text.includes('prasadam') || text.includes('rava')) {
       for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.vratam)) {
           if (text.includes(key.toLowerCase())) return { ...response, explanation: `Om Namo Satyanarayanaya. Vratam Briefing: ${val}` };
       }
@@ -77,6 +83,14 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
           if (text.includes(key.toLowerCase()) || (key === 'infant_priority' && text.includes('infant'))) {
              return { ...response, explanation: `Om Namo Satyanarayanaya. Darshan Briefing: ${val}` };
           }
+      }
+      if (text.includes('laddu') || text.includes('prasadam') || text.includes('rava')) {
+         const pi = SACRED_KNOWLEDGE.prasadam_intelligence;
+         return { 
+            ...response,
+            explanation: `Om Namo Satyanarayanaya. PRASADAM MISSION: ${pi.FLAGSHIP}. ${pi.LOCATION}. ${pi.PAID}. Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}. Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+            visual_data: { type: 'PRIME', decision: 'GO' }
+         };
       }
       if (response.map_commands && response.map_commands.length === 0) {
         response.map_commands.push({ 

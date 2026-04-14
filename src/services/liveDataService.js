@@ -426,6 +426,12 @@ export const fetchRealTimeStatus = async (sector = 'tirupati', isOptimizing = fa
       next_festival: getFestivalCountdown(sector),
       neural_cams: fetchNeuralCams(sector),
       bulletins: fetchOfficialBulletins(),
+      prasadam_metrics: {
+         flagship: IS_TIRUPATI ? 'Ladu' : IS_SRISAILAM ? 'Laddu' : IS_SIMHACHALAM ? 'Laddu' : IS_ANNAVARAM ? 'Satyanarayana Rava' : IS_SABARIMALA ? 'Aravana' : 'Ladu',
+         wait_time: `${Math.floor(10 + Math.random() * 20)}m`,
+         stock_status: totalSecs % 5 === 0 ? 'LIMITED' : 'AVAILABLE',
+         counter_count: IS_TIRUPATI ? '48' : '12'
+      },
       lastCycleId: totalSecs,
       isLive: true
    };

@@ -43,8 +43,9 @@ const SACRED_KNOWLEDGE = {
    },
    laddu_intelligence: {
       'FREE_QUOTA': '1 free laddu per pilgrim completing darshan. Collected at Srivari Seva Sadan.',
-      'PAID_LADDU': 'Exceeding quota laddus: Rs.50 each. Token required from counters behind the temple.',
-      'UPI_KIOSKS': 'NEW: Digital kiosks installed at all 48 counters. Scan UPI to buy laddus instantly. No cash needed.'
+      'PAID_LADDU': 'Exceeding quota laddus: Rs.50 each. Token required from counters behind the temple (48 counters total).',
+      'UPI_KIOSKS': 'NEW: Digital kiosks installed at all 48 counters. Scan UPI to buy laddus instantly. No cash needed.',
+      'LOCATION': 'Primary collection point is near the Vimanadwaram exit. [Wait: Synchronized via Live Telemetry].'
    },
    sacred_spots: {
       'TEERTHAMS': 'Akasa Ganga (hot springs), Papavinasam (curse removal), Silathoranam (natural arch).',
@@ -597,6 +598,16 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
          const tp = sk.ticket_darshan_problems;
          const cp = sk.common_problems;
          return { explanation: `Om Namo Venkatesaya. ⚠️ HONEST REALITY BRIEFING (No Sugarcoating): FREE DARSHAN: ${fp.extreme_wait} ${fp.crowd_pressure} TICKET (SED Rs.300): ${tp.still_long_wait} ${tp.no_vip_feel} COMMON: ${cp.health_safety} ${cp.brutal_truth} Survival Tip: ${fp.survival_tips[0]} | ${fp.survival_tips[1]} | ${fp.survival_tips[4]}`, visual_data: { type: 'INFO', decision: 'CAUTION' } };
+      }
+
+      // 5. PRASADAM / LADDU MISSIONS
+      if (text.includes('laddu') || text.includes('ladu') || text.includes('prasadam') || text.includes('sweet') || text.includes('pulihora')) {
+         const lp = sk.laddu_intelligence;
+         return { 
+            explanation: `Om Namo Venkatesaya. LADDU MISSION STATUS: ${lp.LOCATION} | ${lp.PAID_LADDU} | ${lp.FREE_QUOTA} | Logic: ${lp.UPI_KIOSKS}. Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}. Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+            visual_data: { type: 'PRIME', decision: 'GO' },
+            map_commands: [{ action: "draw_route", points: MISSION_ROUTES.TEMPLE_LADU, zoom: 18 }]
+         };
       }
       if (text.includes('free darshan') || text.includes('sarva darshan') || text.includes('without ticket') || text.includes('free q') || text.includes('free queue') || text.includes('no ticket')) {
          const fp = sk.free_darshan_problems;

@@ -4,7 +4,7 @@ import {
    Shield, Activity, Zap, Map as MapIcon, 
    Terminal, Globe, ChevronRight, AlertTriangle, 
    TrendingUp, TrendingDown, Clock, MousePointer,
-   Wallet, DoorOpen, Bus, Ticket, Sun, Cloud, CloudRain
+   Wallet, DoorOpen, Bus, Ticket, Sun, Cloud, CloudRain, ShoppingBag
 } from 'lucide-react';
 import { fetchAllSectorsData } from '../services/liveDataService';
 import GisMap from './GisMap';
@@ -236,6 +236,25 @@ const UnifiedDashboard = ({ onDeploySector, onClose }) => {
                            </div>
                            <div className="absolute right-0 bottom-0 opacity-5 -mb-4 -mr-4 group-hover/weather:scale-125 transition-transform duration-700">
                                <Sun size={64} className="text-yellow-500" />
+                           </div>
+                        </div>
+
+                        {/* 🍱 PRASADAM PULSE (NEW) */}
+                        <div className="p-3 bg-white rounded-2xl border border-slate-100 flex items-center justify-between group/prasadam relative overflow-hidden">
+                           <div className="flex items-center gap-2 relative z-10">
+                              <div className={`p-1.5 rounded-lg bg-slate-50 border border-slate-100 ${sectorData.prasadam_metrics?.stock_status === 'LIMITED' ? 'animate-pulse' : ''}`}>
+                                 <ShoppingBag size={12} className={sectorData.prasadam_metrics?.stock_status === 'LIMITED' ? 'text-orange-500' : 'text-emerald-600'} />
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">{sectorData.prasadam_metrics?.flagship || 'Sacred Sweet'}</span>
+                                 <span className={`text-[10px] font-black uppercase tracking-tight ${sectorData.prasadam_metrics?.stock_status === 'LIMITED' ? 'text-orange-600' : 'text-slate-950'}`}>
+                                    {sectorData.prasadam_metrics?.stock_status || 'ANALYZING'}
+                                 </span>
+                              </div>
+                           </div>
+                           <div className="text-right relative z-10">
+                              <div className="text-[10px] font-black text-slate-950 tracking-tighter">{sectorData.prasadam_metrics?.wait_time || '--'} WAIT</div>
+                              <div className="text-[6px] font-black text-slate-400 uppercase tracking-widest">Collection Mission</div>
                            </div>
                         </div>
                      </div>
