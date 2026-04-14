@@ -43,6 +43,7 @@ const SACRED_KNOWLEDGE = {
  */
 export const chatWithSabarimalaAi = async (prompt, status) => {
   const text = prompt.toLowerCase();
+  const targetLang = prompt.includes('[LANGUAGE:TE]') ? 'te' : prompt.includes('[LANGUAGE:HI]') ? 'hi' : 'en';
   
   try {
     const projectBriefing = getProjectBriefing();
@@ -105,13 +106,37 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
     return response;
   } catch (e) {
     console.error("Sabarimala Neural Link Failure:", e);
-    return generateFallback(text, status);
+    return generateFallback(text, status, targetLang);
   }
 };
 
-const generateFallback = (text, status) => {
+const generateFallback = (text, status, selectedLang) => {
+  const LOCALIZED = {
+    te: {
+      briefing: `స్వామియే శరణం అయ్యప్ప. పవిత్ర బ్రీఫింగ్: అరవణ మరియు అప్పం ప్రసాదం అందుబాటులో ఉంది. [లైవ్ స్థితి: ${status.prasadam_metrics?.stock_status || 'సింక్ అవుతోంది'}]`,
+      recovery: "స్వామియే శరణం అయ్యప్ప. శబరిమల సెక్కర్ 06 మిషన్ లింక్ ప్రస్తుతం అస్థిరంగా ఉంది. నేను మీ అయ్యప్ప మిషన్ కమాండర్."
+    },
+    hi: {
+      briefing: `स्वामीये शरणम अय्यप्पा। पवित्र ब्रीफिंग: अरवणा और अप्पम प्रसाद उपलब्ध है। [लाइव स्थिति: ${status.prasadam_metrics?.stock_status || 'सिंक हो रहा है'}]`,
+      recovery: "स्वामीये शरणम अय्यप्पा। सबरीमाला सेक्टर 06 मिशन लिंक वर्तमान में अस्थिर है। मैं आपका अयप्पा मिशन कमांडर हूं।"
+    },
+    en: {
+      briefing: `Swamiye Saranam Ayyappa. Sacred Briefing: Aravana and Appam Prasadam are available. [Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}]`,
+      recovery: "Swamiye Saranam Ayyappa. Sabarimala Sector 06 Mission Link is currently unstable due to a sacred grid disruption. I am your Ayyappa Mission Commander."
+    }
+  };
+
+  const lang = LOCALIZED[selectedLang] ? selectedLang : 'en';
+
+  if (text.includes('laddu') || text.includes('prasadam') || text.includes('aravana') || text.includes('appam')) {
+     return { 
+        explanation: LOCALIZED[lang].briefing,
+        visual_data: { type: 'PRIME', decision: 'GO' }
+     };
+  }
+
   return { 
-    explanation: `Swamiye Saranam Ayyappa. Sabarimala Sector 06 Mission Link is currently unstable due to a sacred grid disruption. I am your Ayyappa Mission Commander. Tactical telemetry is still active on your HUD.`, 
+    explanation: LOCALIZED[lang].recovery, 
     map_commands: [{ 
       action: 'set_view', 
       center: [9.4346, 77.0814], 

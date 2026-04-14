@@ -162,7 +162,7 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
 
   if (text.includes('darshan') || text.includes('ticket') || text.includes('antaralayam') || text.includes('mukhamandapam')) {
     for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
-      if (text.includes(key.toLowerCase())) return { explanation: LOCALIZED[lang].briefing.replace('${val}', val), visual_data: { type: 'INFO', decision: 'GO' } };
+      if (text.includes(key.toLowerCase())) return { explanation: `${mantra}. ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
     }
     return { explanation: `${mantra}. Dharma (Free), Mukhamandapam (100), Antaralayam (300).`, visual_data: { type: 'INFO', decision: 'GO' } };
   }

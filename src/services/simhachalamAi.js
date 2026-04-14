@@ -44,7 +44,8 @@ const SACRED_KNOWLEDGE = {
  */
 export const chatWithSimhachalamAi = async (prompt, status) => {
   const text = prompt.toLowerCase();
-
+  const targetLang = prompt.includes('[LANGUAGE:TE]') ? 'te' : prompt.includes('[LANGUAGE:HI]') ? 'hi' : 'en';
+  
   try {
     const projectBriefing = getProjectBriefing();
 
@@ -103,14 +104,38 @@ export const chatWithSimhachalamAi = async (prompt, status) => {
 
     return response;
   } catch (e) {
-    console.error("Simhachalam Link Failure:", e);
-    return generateFallback(text, status);
+    console.error("Simhachalam Sector Disrupted:", e);
+    return generateFallback(text, status, targetLang);
   }
 };
 
-const generateFallback = (text, status) => {
+const generateFallback = (text, status, selectedLang) => {
+  const LOCALIZED = {
+    te: {
+      briefing: `ఓం నమో నరసింహాయ. పవిత్ర బ్రీఫింగ్: సింహాద్రి అప్పన్న లడ్డు అందుబాటులో ఉంది. [లైవ్ స్థితి: ${status.prasadam_metrics?.stock_status || 'సింక్ అవుతోంది'}]`,
+      recovery: "ఓం నమో నరసింహాయ. సింహాచలం సెక్కర్ 04 మిషన్ లింక్ ప్రస్తుతం అస్థిరంగా ఉంది. నేను మీ నరసింహ మిషన్ కమాండర్."
+    },
+    hi: {
+      briefing: `ॐ नमो नरसिंहाय। पवित्र ब्रीफिंग: सिंहाद्रि अप्पन्ना लड्डू उपलब्ध है। [लाइव स्थिति: ${status.prasadam_metrics?.stock_status || 'सिंक हो रहा है'}]`,
+      recovery: "ॐ नमो नरसिंहाय। सिम्हाचलम सेक्टर 04 मिशन लिंक वर्तमान में अस्थिर है। मैं आपका नरसिंह मिशन कमांडर हूं।"
+    },
+    en: {
+      briefing: `Om Namo Narasimhaya. Sacred Briefing: Simhadri Appanna Laddu is available. [Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}]`,
+      recovery: "Om Namo Narasimhaya. Simhachalam Sector 04 Mission Link is currently unstable due to a sacred grid disruption. I am your Narasimha Mission Commander."
+    }
+  };
+
+  const lang = LOCALIZED[selectedLang] ? selectedLang : 'en';
+
+  if (text.includes('laddu') || text.includes('prasadam')) {
+     return { 
+        explanation: LOCALIZED[lang].briefing,
+        visual_data: { type: 'PRIME', decision: 'GO' }
+     };
+  }
+
   return {
-    explanation: `Om Namo Narasimhaya. Simhachalam Sector 04 Mission Link is currently unstable due to a sacred grid disruption. I am your Narasimha Mission Commander. Tactical telemetry is still active on your HUD.`,
+    explanation: LOCALIZED[lang].recovery,
     map_commands: [{ 
       action: 'set_view', 
       center: [17.7665, 83.2505], 

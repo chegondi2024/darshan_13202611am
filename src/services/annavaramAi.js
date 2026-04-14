@@ -42,7 +42,8 @@ const SACRED_KNOWLEDGE = {
  */
 export const chatWithAnnavaramAi = async (prompt, status) => {
   const text = prompt.toLowerCase();
-
+  const targetLang = prompt.includes('[LANGUAGE:TE]') ? 'te' : prompt.includes('[LANGUAGE:HI]') ? 'hi' : 'en';
+  
   try {
     const projectBriefing = getProjectBriefing();
 
@@ -106,13 +107,37 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
     return response;
   } catch (e) {
     console.error("Annavaram Hub Disrupted:", e);
-    return generateFallback(text, status);
+    return generateFallback(text, status, targetLang);
   }
 };
 
-const generateFallback = (text, status) => {
+const generateFallback = (text, status, selectedLang) => {
+  const LOCALIZED = {
+    te: {
+      briefing: `ఓం నమో సత్యనారాయణాయ. పవిత్ర బ్రీఫింగ్: అన్నవరం గోధుమ రవ్వ ప్రసాదం అందుబాటులో ఉంది. [లైవ్ స్థితి: ${status.prasadam_metrics?.stock_status || 'సింక్ అవుతోంది'}]`,
+      recovery: "ఓం నమో సత్యనారాయణాయ. అన్నవరం సెక్కర్ 05 మిషన్ లింక్ ప్రస్తుతం అస్థిరంగా ఉంది. నేను మీ రత్నగిరి మిషన్ కమాండర్."
+    },
+    hi: {
+      briefing: `ॐ नमो सत्यनारायणाय। पवित्र ब्रीफिंग: अन्नवरम गेहूं रवा प्रसाद उपलब्ध है। [लाइव स्थिति: ${status.prasadam_metrics?.stock_status || 'सिंक हो रहा है'}]`,
+      recovery: "ॐ नमो सत्यनारायणाय। अन्नवरम सेक्टर 05 मिशन लिंक वर्तमान में अस्थिर है। मैं आपका रत्नागिरी मिशन कमांडर हूं।"
+    },
+    en: {
+      briefing: `Om Namo Satyanarayanaya. Sacred Briefing: Annavaram Wheat Rava Prasadam is available. [Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}]`,
+      recovery: "Om Namo Satyanarayanaya. Annavaram Sector 05 Mission Link is currently unstable due to a sacred grid disruption. I am your Ratnagiri Mission Commander."
+    }
+  };
+
+  const lang = LOCALIZED[selectedLang] ? selectedLang : 'en';
+
+  if (text.includes('laddu') || text.includes('prasadam') || text.includes('rava')) {
+     return { 
+        explanation: LOCALIZED[lang].briefing,
+        visual_data: { type: 'PRIME', decision: 'GO' }
+     };
+  }
+
   return {
-    explanation: `Om Namo Satyanarayanaya. Annavaram Sector 05 Mission Link is currently unstable due to a sacred grid disruption. I am your Ratnagiri Mission Commander. Tactical telemetry is still active on your HUD.`,
+    explanation: LOCALIZED[lang].recovery,
     map_commands: [{ 
       action: 'set_view', 
       center: [17.2815, 82.3965], 

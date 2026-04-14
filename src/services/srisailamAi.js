@@ -50,6 +50,7 @@ const SACRED_KNOWLEDGE = {
  */
 export const chatWithSrisailamAi = async (prompt, status) => {
   const text = prompt.toLowerCase();
+  const targetLang = prompt.includes('[LANGUAGE:TE]') ? 'te' : prompt.includes('[LANGUAGE:HI]') ? 'hi' : 'en';
   
   try {
     const projectBriefing = getProjectBriefing();
@@ -117,9 +118,33 @@ export const chatWithSrisailamAi = async (prompt, status) => {
   }
 };
 
-const generateFallback = (text, status) => {
+const generateFallback = (text, status, selectedLang) => {
+  const LOCALIZED = {
+    te: {
+      briefing: "ఓం నమః శివాయ. పవిత్ర బ్రీఫింగ్: మల్లికార్జున స్వామి ప్రసాదం అందుబాటులో ఉంది.",
+      recovery: "ఓం నమః శివాయ. శ్రీశైలం సెక్కర్ 03 మిషన్ లింక్ ప్రస్తుతం అస్థిరంగా ఉంది."
+    },
+    hi: {
+      briefing: "ॐ नमः शिवाय। पवित्र ब्रीफिंग: मल्लिकार्जुन स्वामी प्रसाद उपलब्ध है।",
+      recovery: "ॐ नमः शिवाय। श्रीशैलम सेक्टर 03 मिशन लिंक वर्तमान में अस्थिर है।"
+    },
+    en: {
+      briefing: "Om Namah Shivaya. Sacred Briefing: Mallikarjuna Swamy Prasadam is available.",
+      recovery: "Om Namah Shivaya. Srisailam Sector 03 Mission Link is currently unstable due to a sacred grid disruption."
+    }
+  };
+
+  const lang = LOCALIZED[selectedLang] ? selectedLang : 'en';
+
+  if (text.includes('laddu') || text.includes('prasadam')) {
+     return { 
+        explanation: LOCALIZED[lang].briefing,
+        visual_data: { type: 'PRIME', decision: 'GO' }
+     };
+  }
+
   return { 
-    explanation: `Om Namah Shivaya. Srisailam Sector 03 Mission Link is currently unstable due to a sacred grid disruption. I am your Forest Mission Commander. Tactical telemetry is still active on your HUD.`, 
+    explanation: LOCALIZED[lang].recovery, 
     map_commands: [{ 
       action: 'set_view', 
       center: [16.0740, 78.8680], 
