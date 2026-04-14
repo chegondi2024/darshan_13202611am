@@ -104,27 +104,43 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
   }, [triggerQuery]);
 
   const handleSpeak = (text) => {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis || !text) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
+
+    // 🧹 TACTICAL TEXT CLEANING (Remove brackets, metadata, and emojis)
+    const cleanText = text
+      .replace(/\[[^\]]+\]/g, '') // Strip brackets [Wait: 20m]
+      .replace(/\([^)]+\)/g, '')   // Strip coords (13.6, 79.3)
+      .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // Strip Emojis
+      .trim();
+
+    if (!cleanText) return;
+
+    // 🌍 SCRIPT SENSOR ENGINE
+    const isTelugu = /[\u0C00-\u0C7F]/.test(cleanText);
+    const isHindi = /[\u0900-\u097F]/.test(cleanText);
+    
+    // Determine the ACTUAL content language
+    let contentLang = 'en';
+    if (isTelugu) contentLang = 'te';
+    else if (isHindi) contentLang = 'hi';
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     
     // 🌍 LOCALIZED INDIAN VOICE SELECTION ENGINE
     const findIndianVoice = (langCode, gender) => {
       const isFemale = gender === 'female';
       const locales = [langCode + '-IN', langCode];
       
-      // Rank 1: Precise Locale + Gender Keywords
       let match = availableVoices.find(v => 
         locales.some(l => v.lang.toLowerCase() === l.toLowerCase()) && 
         (isFemale ? /female|woman|girl|heera|pallavi|siri/i.test(v.name) : /male|man|boy|david|rishi/i.test(v.name))
       );
       
-      // Rank 2: Precise Locale Only
       if (!match) {
         match = availableVoices.find(v => locales.some(l => v.lang.toLowerCase() === l.toLowerCase()));
       }
       
-      // Rank 3: Search via Name Keywords if Locale fails
       if (!match) {
         match = availableVoices.find(v => v.name.toLowerCase().includes(langCode) || v.lang.toLowerCase().startsWith(langCode));
       }
@@ -138,16 +154,17 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
       en: findIndianVoice('en', voiceGender)
     };
 
-    utterance.voice = voiceMap[selectedLang] || selectedVoice;
-    utterance.lang = selectedLang === 'hi' ? 'hi-IN' : selectedLang === 'te' ? 'te-IN' : 'en-IN';
+    // Use detected content language priority
+    utterance.voice = voiceMap[contentLang] || voiceMap[selectedLang] || selectedVoice;
+    utterance.lang = contentLang === 'hi' ? 'hi-IN' : contentLang === 'te' ? 'te-IN' : 'en-IN';
 
     // 🎙️ PERSONA TUNING
     if (voiceGender === 'female') {
-       utterance.pitch = 1.05; // Natural female pitch
-       utterance.rate = 1.0;
+       utterance.pitch = 1.05;
+       utterance.rate = 0.95; // Slightly slower for clarity
     } else {
-       utterance.pitch = 0.92; // Authoritative male commander
-       utterance.rate = 1.05;
+       utterance.pitch = 0.92;
+       utterance.rate = 1.0;
     }
 
     window.speechSynthesis.speak(utterance);

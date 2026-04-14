@@ -154,35 +154,32 @@ const generateFallback = (text, status, mantra = 'Om Namo Durgaye') => {
 
   if (text.includes('senior') || text.includes('old age')) {
     return {
-      explanation: `Om Namo Durgaye. PRIORITY MISSION: ${sk.priority_protocol.process}. Documents: ${sk.priority_protocol.id_documents}. Use the lift facility at the hill top.`,
+      explanation: `${mantra}. PRIORITY MISSION: Senior Citizen access available. Use the lift facility at the hill top.`,
       map_commands: [{ action: "set_view", center: [16.5155, 80.6052], zoom: 18 }],
       visual_data: { type: 'PRIME', decision: 'GO' }
     };
   }
 
-  if (text.includes('darshan') || text.includes('ticket') || text.includes('mukhamandapam') || text.includes('antaralayam') || text.includes('infant')) {
-    for (const [key, val] of Object.entries(sk.darshan)) {
-       const searchKey = key.split('_').join(' ').toLowerCase();
-       if (text.includes(searchKey) || (key === 'infant_entry' && text.includes('infant'))) {
-          return { explanation: `Om Namo Durgaye. Sacred Briefing: ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
-       }
+  if (text.includes('darshan') || text.includes('ticket') || text.includes('antaralayam') || text.includes('mukhamandapam')) {
+    for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
+      if (text.includes(key.toLowerCase())) return { explanation: LOCALIZED[lang].briefing.replace('${val}', val), visual_data: { type: 'INFO', decision: 'GO' } };
     }
-    return { explanation: `Tactical Briefing: Dharma (Free): ${sk.darshan.dharma} | Mukhamandapam (100): ${sk.darshan.mukhamandapam} | Antaralayam (300): ${sk.darshan.antaralayam}. Which briefing do you require?`, visual_data: { type: 'INFO', decision: 'GO' } };
+    return { explanation: `${mantra}. Dharma (Free), Mukhamandapam (100), Antaralayam (300).`, visual_data: { type: 'INFO', decision: 'GO' } };
   }
 
   if (text.includes('laddu') || text.includes('prasadam') || text.includes('pulihora') || text.includes('sweet')) {
      const pi = sk.prasadam_intelligence;
      return { 
-        explanation: `Om Namo Durgaye. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
+        explanation: `${mantra}. PRASADAM MISSION: ${pi.FLAGSHIP} are available. ${pi.LOCATION}. ${pi.PAID}. Live Wait: ${status.prasadam_metrics?.wait_time || '--'}.`,
         visual_data: { type: 'PRIME', decision: 'GO' }
      };
   }
 
   if (text.includes('route') || text.includes('how to go') || text.includes('navigation')) {
     return {
-      explanation: `Projecting Tactical Route. Moving from Transit Hub to Hill Top Temple via Indrakeeladri Bypass.`,
-      map_commands: [{ action: "draw_route", points: [[16.5186, 80.6206], [16.5150, 80.6100], [16.5153, 80.6050]], zoom: 16 }],
-      visual_data: { type: 'NAVIGATION', decision: 'GO' }
+      explanation: `${mantra}. Projecting Tactical Route. Moving from Transit Hub to Hill Top Temple.`,
+      map_commands: [{ action: 'draw_route', points: [[16.5150, 80.6050], [16.5140, 80.6000]], zoom: 16 }],
+      visual_data: { type: 'NAVIGATOR_HUB', decision: 'GO' }
     };
   }
 

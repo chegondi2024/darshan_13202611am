@@ -379,7 +379,27 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
          }
       }
 
-      // 0. EMERGENCY EXIT INTELLIGENCE (Only triggers on URGENT/EMERGENCY intent)
+      const LOCALIZED_RESPONSES = {
+         te: {
+            briefing: `ఓం నమో వేంకటేశాయ. పవిత్ర బ్రీఫింగ్: ${val}. [లైవ్ స్టేటస్: ${status.prasadam_metrics?.stock_status || 'సింక్ అవుతోంది'}]`,
+            emergency: `ఓం నమో వేంకటేశాయ. అత్యవసర నిష్క్రమణ బ్రీఫింగ్: గమ్యం — ${dest}. ${steps} సహాయం కోసం: 1800-425-1333.`,
+            recovery: "ఓం నమో వేంకటేశాయ. తిరుపతి సెక్టర్ 01 మిషన్ లింక్ ప్రస్తుతం అస్థిరంగా ఉంది. నేను మీ శ్రీవారి మిషన్ కమాండర్‌ను."
+         },
+         hi: {
+            briefing: `ॐ नमो वेंकटेशाय। पवित्र ब्रीफिंग: ${val}। [लाइव स्थिति: ${status.prasadam_metrics?.stock_status || 'सिंक हो रहा है'}]`,
+            emergency: `ॐ नमो वेंकटेशाय। आपातकालीन निकास ब्रीफिंग: गंतव्य — ${dest}। ${steps} सहायता के लिए: 1800-425-1333।`,
+            recovery: "ॐ नमो वेंकटेशाय। तिरुपति सेक्टर 01 मिशन लिंक वर्तमान में अस्थिर है। मैं आपका श्रीवारी मिशन कमांडर हूं।"
+         },
+         en: {
+            briefing: `Om Namo Venkatesaya. Sacred Briefing: ${val}. [Live Status: ${status.prasadam_metrics?.stock_status || 'Syncing'}]`,
+            emergency: `Om Namo Venkatesaya. 🚨 EMERGENCY EXIT BRIEFING: Destination — ${dest}. ${steps} TTD Helpline: 1800-425-1333.`,
+            recovery: "Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable due to a sacred grid disruption. I am your Srivari Mission Commander."
+         }
+      };
+
+      const lang = LOCALIZED_RESPONSES[targetLang] ? targetLang : 'en';
+
+      // 0. EMERGENCY EXIT INTELLIGENCE
       const urgentIntentKeywords = ['urgent', 'emergency', 'quit queue', 'leave queue', 'quit q line', 'leave q', 'go back urgent', 'urgent work', 'urgent matter'];
       const hasUrgentIntent = urgentIntentKeywords.some(kw => text.includes(kw));
       if (hasUrgentIntent) {
@@ -406,7 +426,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
          }
 
          return {
-            explanation: `Om Namo Venkatesaya. 🚨 EMERGENCY EXIT BRIEFING: Destination — ${dest}. ${steps} TTD Helpline: 1800-425-1333 (Toll Free). Lord Venkateswara will understand. Come back soon! 🙏`,
+            explanation: LOCALIZED_RESPONSES[lang].emergency.replace('${dest}', dest).replace('${steps}', steps),
             map_commands: [{ action: 'draw_route', points: route, zoom }],
             visual_data: { type: 'NAVIGATOR_HUB', decision: 'CAUTION' }
          };
@@ -415,42 +435,25 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       // 1. Navigation Logic (Classic Pre-defined Routes)
       if (text.includes('how to go') || text.includes('route') || text.includes('navigate') || text.includes('location') || text.includes('bus stand') || text.includes('bus station') || text.includes('railway') || text.includes('airport')) {
          let advice = "You can reach Tirumala via Alipiri (Vehicle/Steps) or Srivari Mettu (Steps).";
+         const LOCAL_ADVICE = {
+            te: "మీరు అలిపిరి లేదా శ్రీవారి మెట్టు మెట్ల మార్గం ద్వారా తిరుమల చేరుకోవచ్చు.",
+            hi: "आप अलीपिरी या श्रीवारी मेट्टू पदयात्रा मार्ग से तिरुमाला पहुँच सकते हैं।"
+         };
          let commands = [];
 
          if (text.includes('bus stand') || text.includes('bus station') || text.includes('apsrtc')) {
-            advice = "APSRTC Bus Stand is in Tirupati city. Projecting the route from Tirumala hill to the Bus Stand.";
+            advice = lang === 'en' ? "APSRTC Bus Stand is in Tirupati city. Projecting the route from Tirumala hill to the Bus Stand." : LOCAL_ADVICE[lang] + " ఆర్టీసీ బస్టాండ్ మార్గాన్ని చూపుతున్నాను.";
             commands = [{ action: 'draw_route', points: MISSION_ROUTES.TEMPLE_TO_BUSSTAND, zoom: 13 }];
          } else if (text.includes('railway') || text.includes('train station') || text.includes('railway station')) {
-            advice = "Tirupati Railway Station is 3km from the Bus Stand. Projecting the route from Tirumala hill to the Railway Station.";
+            advice = lang === 'en' ? "Tirupati Railway Station is 3km from the Bus Stand. Projecting the route from Tirumala hill to the Railway Station." : LOCAL_ADVICE[lang] + " రైల్వే స్టేషన్ మార్గాన్ని చూపుతున్నాను.";
             commands = [{ action: 'draw_route', points: MISSION_ROUTES.TEMPLE_TO_RAILWAY, zoom: 13 }];
          } else if (text.includes('airport')) {
-            advice = "Tirupati Airport is 15km from the city. Take a cab from the Railway Station or Bus Stand. Approx Rs.300-500.";
+            advice = lang === 'en' ? "Tirupati Airport is 15km from the city. Take a cab from the Railway Station or Bus Stand. Approx Rs.300-500." : LOCAL_ADVICE[lang] + " విమానాశ్రయం బ్రీఫింగ్ సిద్ధంగా ఉంది.";
             commands = [{ action: 'draw_route', points: MISSION_ROUTES.TEMPLE_TO_RAILWAY, zoom: 12 }];
-         } else if (text.includes('pac 5') || text.includes('venkatadri') || text.includes('pac5')) {
-            advice = "PAC-5 (Venkatadri) is near the Main Temple. I am projecting the 5-minute walking route on your map now.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.PAC5_TEMPLE, zoom: 17 }];
-         } else if (text.includes('vqc') || text.includes('queue') || text.includes('complex') || text.includes('compartment')) {
-            advice = "VQC Complex is the primary entry point to the temple. I am projecting the internal entry route to the Mahadwaram.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.VQC_TEMPLE, zoom: 17 }];
-         } else if (text.includes('ladu') || text.includes('prasadam') || text.includes('counter')) {
-            advice = "Ladu Prasadam counters are located behind the main temple. Projecting the route from the exit gate.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.TEMPLE_LADU, zoom: 18 }];
-         } else if (text.includes('tiruchanoor') || text.includes('ammavari') || text.includes('padmavathi')) {
-            advice = "Sri Padmavathi Ammavari Temple is in Tiruchanoor (south sector). Projecting the route from the city transport hub.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.CITY_TO_TIRUCHANOOR, zoom: 14 }];
-         } else if (text.includes('kapila') || text.includes('theertham')) {
-            advice = "Sri Kapileswara Swamy Temple is at the foot of the hills. Projecting the tactical route from PAC-1.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.CITY_TO_KAPILA, zoom: 15 }];
-         } else if (text.includes('govindaraja')) {
-            advice = "Sri Govindaraja Swamy Temple is located near the Railway Station. Displaying the central city route.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.CITY_TO_GOVINDARAJA, zoom: 16 }];
-         } else if (text.includes('alipiri')) {
-            advice = "Displaying the tactical route from Alipiri to Tirumala via the Main Ghat Road.";
-            commands = [{ action: "draw_route", points: MISSION_ROUTES.ALIPIRI_TEMPLE, zoom: 14 }];
          }
 
          return {
-            explanation: `Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable. Local Tactical Briefing: ${advice}`,
+            explanation: `${mantra}. ${advice}`,
             map_commands: commands,
             visual_data: { type: "NAVIGATOR_HUB", decision: "GO" }
          };
@@ -643,14 +646,12 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       // 4. Darshan type definitions
       if (text.includes('what is') || text.includes('tell me about') || text.includes('ssd') || text.includes('sed') || text.includes('divya') || text.includes('sarva') || text.includes('suprabhata') || text.includes('seva') || text.includes('infant') || text.includes('nri') || text.includes('virtual') || text.includes('srivani') || text.includes('supadham') || text.includes('angapradakshinam')) {
          for (const [key, val] of Object.entries(SACRED_KNOWLEDGE.darshan)) {
-            // Need to match partial keys for 'SUPADHAM_INFANT' etc.
             const searchKey = key.split('_').join(' ').toLowerCase();
             if (text.includes(searchKey) || (key === 'SUPADHAM_INFANT' && text.includes('infant')) || (key === 'SUPADHAM_NRI' && text.includes('nri'))) {
-               return { explanation: `Om Namo Venkatesaya. Sacred Briefing: ${val}`, visual_data: { type: 'INFO', decision: 'GO' } };
+               return { explanation: LOCALIZED_RESPONSES[lang].briefing.replace('${val}', val), visual_data: { type: 'INFO', decision: 'GO' } };
             }
          }
-         // General darshan info if no specific type matched
-         return { explanation: `Om Namo Venkatesaya. Darshan Types: SSD (Free Slot Token), SED (Rs.300 Online), DIVYA (Foot Pilgrims), SARVA (Walk-in), SRIVANI (Trust VIP), VIRTUAL (Online Seva), SUPADHAM (Infant/NRI), ANGAPRADAKSHINAM. Which type would you like details on?`, visual_data: { type: 'INFO', decision: 'GO' } };
+         return { explanation: `${mantra}. SSD (Free Slot), SED (Rs.300), DIVYA (Foot), SARVA (Walk-in), SRIVANI (VIP).`, visual_data: { type: 'INFO', decision: 'GO' } };
       }
 
 
@@ -664,7 +665,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
       }
 
       return {
-         explanation: "Om Namo Venkatesaya. Tirupati Sector 01 Mission Link is currently unstable due to a sacred grid disruption. I am your Srivari Mission Commander. Tactical telemetry is still active on your HUD.",
+         explanation: LOCALIZED_RESPONSES[lang].recovery,
          map_commands: [{ 
             action: 'set_view', 
             center: [13.6833, 79.3474], 
