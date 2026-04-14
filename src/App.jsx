@@ -1,24 +1,21 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import GisMap from './components/GisMap';
-import AiChatbot from './components/AiChatbot';
-import SectorIntelligence from './components/SectorIntelligence';
-import RitualLogs from './components/RitualLogs';
-import VoiceController from './components/VoiceController';
-import LandingPage from './components/LandingPage';
-import UnifiedDashboard from './components/UnifiedDashboard';
-import PilgrimPassport from './components/PilgrimPassport';
-import GeoVisionScanner from './components/GeoVisionScanner';
-import InstallPrompt from './components/InstallPrompt';
-import { chatWithTirupatiAi } from './services/tirupatiAi';
-import { chatWithVijayawadaAi } from './services/vijayawadaAi';
-import { chatWithSrisailamAi } from './services/srisailamAi';
-import { chatWithSimhachalamAi } from './services/simhachalamAi';
-import { chatWithAnnavaramAi } from './services/annavaramAi';
-import { chatWithSabarimalaAi } from './services/sabarimalaAi';
-import { chatWithGlobalAi } from './services/globalAi';
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
+import { Shield, Map as MapIcon, Database, Activity, LayoutDashboard, Settings, Sun, Bell, Eye, EyeOff, Bot, User, Cpu } from 'lucide-react';
+
+// UI SHARDS (LAZY LOADING)
+const GisMap = lazy(() => import('./components/GisMap'));
+const AiChatbot = lazy(() => import('./components/AiChatbot'));
+const SectorIntelligence = lazy(() => import('./components/SectorIntelligence'));
+const RitualLogs = lazy(() => import('./components/RitualLogs'));
+const VoiceController = lazy(() => import('./components/VoiceController'));
+const LandingPage = lazy(() => import('./components/LandingPage'));
+const UnifiedDashboard = lazy(() => import('./components/UnifiedDashboard'));
+const PilgrimPassport = lazy(() => import('./components/PilgrimPassport'));
+const GeoVisionScanner = lazy(() => import('./components/GeoVisionScanner'));
+const InstallPrompt = lazy(() => import('./components/InstallPrompt'));
+
+// SHARED SERVICES (STATIC)
 import { fetchRealTimeStatus, fetchTransitFleet, fetchAllSectorsData, fetchAiContext } from './services/liveDataService';
 import { requestNotificationPermission, sendNeuralNotification, checkWaitTimeAlerts } from './services/notificationManager';
-import { Shield, Map as MapIcon, Database, Activity, LayoutDashboard, Settings, Sun, Bell, Eye, EyeOff, Bot, User } from 'lucide-react';
 
 const App = () => {
    const [activeSector, setActiveSector] = useState(null);
@@ -131,21 +128,24 @@ const App = () => {
 
    const handleAiMessage = useCallback(async (prompt) => {
       const text = prompt.toLowerCase();
-      let aiService;
+      let aiServiceMod;
 
       // 1. Fetch Sacred Database Context (V8.0)
       const dbHistory = await fetchAiContext();
 
+      // 2. DYNAMIC NEURAL SHARDING (V10.0)
       if (text.includes('all temple') || text.includes('all darshan') || text.includes('every temple') || text.includes('global report') || !activeSector) {
-         aiService = chatWithGlobalAi;
-      } else if (activeSector === 'tirupati') aiService = chatWithTirupatiAi;
-      else if (activeSector === 'srisailam') aiService = chatWithSrisailamAi;
-      else if (activeSector === 'simhachalam') aiService = chatWithSimhachalamAi;
-      else if (activeSector === 'annavaram') aiService = chatWithAnnavaramAi;
-      else if (activeSector === 'sabarimala') aiService = chatWithSabarimalaAi;
-      else aiService = chatWithVijayawadaAi;
+         aiServiceMod = await import('./services/globalAi');
+      } else if (activeSector === 'tirupati') aiServiceMod = await import('./services/tirupatiAi');
+      else if (activeSector === 'srisailam') aiServiceMod = await import('./services/srisailamAi');
+      else if (activeSector === 'simhachalam') aiServiceMod = await import('./services/simhachalamAi');
+      else if (activeSector === 'annavaram') aiServiceMod = await import('./services/annavaramAi');
+      else if (activeSector === 'sabarimala') aiServiceMod = await import('./services/sabarimalaAi');
+      else aiServiceMod = await import('./services/vijayawadaAi');
 
-      const response = await aiService(prompt, liveData, dbHistory);
+      const executeAi = aiServiceMod.chatWithGlobalAi || aiServiceMod.chatWithTirupatiAi || aiServiceMod.chatWithSrisailamAi || aiServiceMod.chatWithSimhachalamAi || aiServiceMod.chatWithAnnavaramAi || aiServiceMod.chatWithSabarimalaAi || aiServiceMod.chatWithVijayawadaAi;
+
+      const response = await executeAi(prompt, liveData, dbHistory);
       if (response.map_commands && response.map_commands.length > 0) {
          response.map_commands.forEach(cmd => {
             if (cmd.action === 'set_view') {
@@ -216,42 +216,74 @@ const App = () => {
       liveData.footpath_status
    ].filter(Boolean) : [];
 
-   return (
-      <div className="flex h-screen w-screen bg-slate-50 overflow-hidden relative font-sans text-slate-900">
-         {/* Background Neural Layer (Global) */}
-         <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
-            <img src="/temple_bg.png" className="w-full h-full object-cover blur-2xl scale-110" alt="" />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-slate-50/90" />
+   const GridLoader = () => (
+      <div className="flex flex-col items-center justify-center h-full w-full bg-slate-900/10 backdrop-blur-sm">
+         <div className="relative">
+            <Cpu className="w-12 h-12 text-indigo-600 animate-pulse" />
+            <div className="absolute inset-0 bg-indigo-500/20 blur-xl animate-ping rounded-full" />
          </div>
+         <span className="mt-4 text-xs font-bold tracking-widest text-indigo-700/60 uppercase">Synchronizing Neural Grid...</span>
+      </div>
+   );
 
-         <VoiceController onCommand={handleVoiceCommand} />
+   return (
+      <Suspense fallback={
+         <div className="h-screen w-screen bg-[#0a0a20] flex items-center justify-center">
+            <div className="flex flex-col items-center">
+               <Shield className="w-16 h-16 text-indigo-500 animate-spin" />
+               <h1 className="mt-6 text-2xl font-black text-indigo-300 tracking-tighter uppercase">Sentinel Shard</h1>
+            </div>
+         </div>
+      }>
+         <div className="flex h-screen w-screen bg-slate-50 overflow-hidden relative font-sans text-slate-900">
+            {/* Background Neural Layer (Global) */}
+            <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+               <img src="/temple_bg.png" className="w-full h-full object-cover blur-2xl scale-110" alt="" />
+               <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-slate-50/90" />
+            </div>
 
-         {showPassport && <PilgrimPassport onClose={() => setShowPassport(false)} />}
+            <Suspense fallback={<div />}>
+                <VoiceController onCommand={handleVoiceCommand} />
+            </Suspense>
 
-         {isVisionActive && (
-            <GeoVisionScanner 
-               onClose={() => setIsVisionActive(false)} 
-               onDensityUpdate={setVisionDensity}
-            />
-         )}
+            {showPassport && (
+                <Suspense fallback={<div />}>
+                    <PilgrimPassport onClose={() => setShowPassport(false)} />
+                </Suspense>
+            )}
 
-         <InstallPrompt />
+            {isVisionActive && (
+               <Suspense fallback={<div />}>
+                    <GeoVisionScanner 
+                        onClose={() => setIsVisionActive(false)} 
+                        onDensityUpdate={setVisionDensity}
+                    />
+               </Suspense>
+            )}
 
-         {/* MAIN VIEW ROUTER */}
-         {isOverseer ? (
-            <UnifiedDashboard
-               onClose={() => setIsOverseer(false)}
-               onDeploySector={(s) => {
-                  setActiveSector(s);
-                  setLiveData(null);
-                  setIsOverseer(false);
-               }}
-            />
-         ) : !activeSector ? (
-            <LandingPage 
-               onSelectSector={setActiveSector} 
-               onOpenOverseer={() => setIsOverseer(true)} 
-            />
+            <Suspense fallback={<div />}>
+                <InstallPrompt />
+            </Suspense>
+
+            {/* MAIN VIEW ROUTER */}
+            {isOverseer ? (
+               <Suspense fallback={<GridLoader />}>
+                   <UnifiedDashboard
+                      onClose={() => setIsOverseer(false)}
+                      onDeploySector={(s) => {
+                         setActiveSector(s);
+                         setLiveData(null);
+                         setIsOverseer(false);
+                      }}
+                   />
+               </Suspense>
+            ) : !activeSector ? (
+            <Suspense fallback={<GridLoader />}>
+                <LandingPage 
+                   onSelectSector={setActiveSector} 
+                   onOpenOverseer={() => setIsOverseer(true)} 
+                />
+            </Suspense>
          ) : (
             <>
                {/* TICKER HUD (Tactical Hub Only) */}
@@ -261,7 +293,7 @@ const App = () => {
                      <span className="flex items-center gap-2">TIRUPATI: {globalGrid?.sectors?.tirupati?.darshan_metrics?.free_waiting?.value || '24'}H WAIT</span>
                      <span className="flex items-center gap-2 text-emerald-400">VIJAYAWADA: OPTIMAL FLOW</span>
                      <span className="flex items-center gap-2">SRISAILAM: GATE ACTIVE</span>
-                     <span className="text-slate-500">• MISSION SECURE • {new Date().toLocaleTimeString()} •</span>
+                     <span className="text-slate-500">â€¢ MISSION SECURE â€¢ {new Date().toLocaleTimeString()} â€¢</span>
                      <span onClick={() => setActiveSector(null)} className="cursor-pointer hover:text-red-500 underline decoration-dotted">EXIT MISSION</span>
                   </div>
                </div>
@@ -298,52 +330,56 @@ const App = () => {
                </div>
 
                {showIntelligence && (
-                  <SectorIntelligence
-                     existingData={liveData}
-                     onLocatePlace={handleFlyTo}
-                     showGhatTraffic={showGhatTraffic}
-                     setGhatTraffic={setShowGhatTraffic}
-                     showPACMarkers={showPACMarkers}
-                     setPACMarkers={setShowPACMarkers}
-                     showCrowdMarkers={showCrowdMarkers}
-                     setCrowdMarkers={setShowCrowdMarkers}
-                     showGoogleTraffic={showGoogleTraffic}
-                     setGoogleTraffic={setShowGoogleTraffic}
-                     showEvacuationRoutes={showEvacuationRoutes}
-                     setEvacuationRoutes={setShowEvacuationRoutes}
-                     onGridTour={handleGridTour}
-                     isOptimizing={isOptimizing}
-                     setIsOptimizing={handleOptimization}
-                     nextSyncIn={nextSyncIn}
-                     lastSync={lastSyncTime}
-                     sector={activeSector}
-                     transitFleet={transitFleet}
-                     isVisionActive={isVisionActive}
-                     setIsVisionActive={setIsVisionActive}
-                     visionDensity={visionDensity}
-                  />
+                  <Suspense fallback={<div />}>
+                      <SectorIntelligence
+                         existingData={liveData}
+                         onLocatePlace={handleFlyTo}
+                         showGhatTraffic={showGhatTraffic}
+                         setGhatTraffic={setShowGhatTraffic}
+                         showPACMarkers={showPACMarkers}
+                         setPACMarkers={setShowPACMarkers}
+                         showCrowdMarkers={showCrowdMarkers}
+                         setCrowdMarkers={setShowCrowdMarkers}
+                         showGoogleTraffic={showGoogleTraffic}
+                         setGoogleTraffic={setShowGoogleTraffic}
+                         showEvacuationRoutes={showEvacuationRoutes}
+                         setEvacuationRoutes={setShowEvacuationRoutes}
+                         onGridTour={handleGridTour}
+                         isOptimizing={isOptimizing}
+                         setIsOptimizing={handleOptimization}
+                         nextSyncIn={nextSyncIn}
+                         lastSync={lastSyncTime}
+                         sector={activeSector}
+                         transitFleet={transitFleet}
+                         isVisionActive={isVisionActive}
+                         setIsVisionActive={setIsVisionActive}
+                         visionDensity={visionDensity}
+                      />
+                  </Suspense>
                )}
 
                <div className="flex-1 h-screen relative">
-                  <GisMap
-                     mapView={mapView}
-                     activeNodeId={activeNodeId}
-                     crowdData={liveData?.crowd_intelligence}
-                     trafficData={liveData?.traffic_intelligence}
-                     lockerData={liveData?.pac_lockers}
-                     advisoryData={liveData?.ai_insights}
-                     darshanData={liveData?.darshan}
-                     showGhatTraffic={showGhatTraffic}
-                     showPACMarkers={showPACMarkers}
-                     showCrowdMarkers={showCrowdMarkers}
-                     showGoogleTraffic={showGoogleTraffic}
-                     showEvacuationRoutes={showEvacuationRoutes}
-                     isOptimizing={isOptimizing}
-                     activeRoute={activeRoute}
-                     transitFleet={transitFleet}
-                     sector={activeSector}
-                     existingData={liveData}
-                  />
+                  <Suspense fallback={<GridLoader />}>
+                      <GisMap
+                         mapView={mapView}
+                         activeNodeId={activeNodeId}
+                         crowdData={liveData?.crowd_intelligence}
+                         trafficData={liveData?.traffic_intelligence}
+                         lockerData={liveData?.pac_lockers}
+                         advisoryData={liveData?.ai_insights}
+                         darshanData={liveData?.darshan}
+                         showGhatTraffic={showGhatTraffic}
+                         showPACMarkers={showPACMarkers}
+                         showCrowdMarkers={showCrowdMarkers}
+                         showGoogleTraffic={showGoogleTraffic}
+                         showEvacuationRoutes={showEvacuationRoutes}
+                         isOptimizing={isOptimizing}
+                         activeRoute={activeRoute}
+                         transitFleet={transitFleet}
+                         sector={activeSector}
+                         existingData={liveData}
+                      />
+                  </Suspense>
                </div>
             </>
          )}
@@ -351,14 +387,16 @@ const App = () => {
          {/* GLOBAL MISSION ORACLE (TOGGLEABLE - PERSISTENT ON ALL PAGES) */}
          {isChatOpen ? (
             <div className="fixed right-8 bottom-12 z-[20000] w-[420px] h-[calc(100vh-140px)] animate-fade-in pointer-events-auto">
-               <AiChatbot 
-                  onSendMessage={handleAiMessage} 
-                  onFlyTo={handleFlyTo} 
-                  triggerQuery={aiTriggerQuery} 
-                  onQueryProcessed={() => setAiTriggerQuery(null)} 
-                  sector={activeSector}
-                  onClose={() => setIsChatOpen(false)}
-               />
+               <Suspense fallback={<div className="h-full w-full bg-slate-900/5 backdrop-blur-md rounded-3xl animate-pulse" />}>
+                  <AiChatbot 
+                     onSendMessage={handleAiMessage} 
+                     onFlyTo={handleFlyTo} 
+                     triggerQuery={aiTriggerQuery} 
+                     onQueryProcessed={() => setAiTriggerQuery(null)} 
+                     sector={activeSector}
+                     onClose={() => setIsChatOpen(false)}
+                  />
+               </Suspense>
             </div>
          ) : (
             <button 
@@ -370,7 +408,8 @@ const App = () => {
                <Bot size={28} className="group-hover:rotate-12 transition-transform relative z-10" />
             </button>
          )}
-      </div>
+         </div>
+      </Suspense>
    );
 };
 

@@ -57,6 +57,18 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-ui': ['framer-motion', 'lucide-react', 'clsx', 'tailwind-merge'],
+          'vendor-maps': ['leaflet', 'react-leaflet'],
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
   server: {
     port: 5174
   }
