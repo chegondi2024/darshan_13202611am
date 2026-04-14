@@ -108,19 +108,21 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
     const utterance = new SpeechSynthesisUtterance(text);
     
     // 🌍 MISSION LANGUAGE ADAPTATION
-    if (selectedLang === 'hi') {
-       utterance.voice = availableVoices.find(v => v.lang.startsWith('hi')) || selectedVoice;
-       utterance.lang = 'hi-IN';
-    } else if (selectedLang === 'te') {
-       utterance.voice = availableVoices.find(v => v.lang.startsWith('te')) || selectedVoice;
-       utterance.lang = 'te-IN';
-    } else {
-       utterance.voice = selectedVoice;
-       utterance.lang = 'en-IN';
-    }
+    const voiceMap = {
+      hi: availableVoices.find(v => v.lang.startsWith('hi') && v.name.includes('Google')) || 
+          availableVoices.find(v => v.lang.startsWith('hi')),
+      te: availableVoices.find(v => v.lang.startsWith('te') && v.name.includes('Google')) || 
+          availableVoices.find(v => v.lang.startsWith('te')),
+      en: availableVoices.find(v => v.name.includes('Microsoft') && v.name.includes('David')) || 
+          availableVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
+          availableVoices.find(v => v.lang.startsWith('en'))
+    };
 
-    utterance.pitch = 1.1; // Tactical authority
-    utterance.rate = 1.0;
+    utterance.voice = voiceMap[selectedLang] || selectedVoice;
+    utterance.lang = selectedLang === 'hi' ? 'hi-IN' : selectedLang === 'te' ? 'te-IN' : 'en-IN';
+
+    utterance.pitch = 0.95; // Authoritative, slightly deeper
+    utterance.rate = 1.05; // Efficient pace
     window.speechSynthesis.speak(utterance);
   };
 
@@ -329,16 +331,17 @@ const AiChatbot = ({ onSendMessage, onFlyTo, triggerQuery, onQueryProcessed, sec
                      const SECTOR_COORDS = { tirupati: [13.6833, 79.3474], vijayawada: [16.5150, 80.6050], srisailam: [16.0740, 78.8680], simhachalam: [17.7665, 83.2505], annavaram: [17.2810, 82.3960], sabarimala: [9.4346, 77.0814] };
                      const finalCenter = cmd.points?.[0] || cmd.center || SECTOR_COORDS[sector] || [13.6833, 79.3474];
                      return (
-                     <button 
-                       key={idx}
-                       onClick={(e) => {
-                         e.preventDefault();
-                         onFlyTo(finalCenter, cmd.zoom || 15, cmd.id || 'temple', cmd.label || 'Sector Scan');
-                       }}
-                       className={`px-4 py-3 text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all flex items-center gap-2 shadow-lg active:scale-95 ${AURA_CONFIG[activeAura].primary}`}
-                     >
-                       <Navigation size={14} /> {cmd.label ? cmd.label.replace(/ststus/i, 'Status').toUpperCase() : (cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID')}
-                     </button>
+                      <button 
+                        key={idx}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (autoSpeak) handleSpeak(`Vedic Grid Synchronization: ${cmd.label || 'Adjusting Viewport'}`);
+                          onFlyTo(finalCenter, cmd.zoom || 15, cmd.id || 'temple', cmd.label || 'Sector Scan');
+                        }}
+                        className={`px-4 py-3 text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all flex items-center gap-2 shadow-lg active:scale-95 ${AURA_CONFIG[activeAura].primary}`}
+                      >
+                        <Navigation size={14} /> {cmd.label ? cmd.label.replace(/ststus/i, 'Status').toUpperCase() : (cmd.action === 'draw_route' ? 'START NAVIGATION' : 'SCAN GRID')}
+                      </button>
                    )})}
                 </div>
               )}

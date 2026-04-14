@@ -82,6 +82,7 @@ export const chatWithVijayawadaAi = async (prompt, status) => {
       MISSION DATA: Use the provided [PROJECT DNA] to answer technical questions about your capabilities (heartbeat, scraping, multiple auras, etc.).
       MULTILINGUAL MANDATE: If the user query includes a [LANGUAGE:X] directive, you MUST respond entirely in that language (Hindi/Telugu/English) using the appropriate regional script.
       SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior Citizen lifts, Infant priority, or NRI protocols. Use the KNOWLEDGE base to provide precise tactical briefings.
+      METEOROLOGICAL INTELLIGENCE: Use the provided [METEO_DATA] to proactively warn the user about temperature or rain impacts. If Thunderstorms or Heavy Rain is detected, emphasize the use of the hill-top lifts and free bus service.
       Provide tactical, honest, mission-ready advice. Always return JSON.
       
       FORMAT (JSON):
@@ -96,6 +97,7 @@ export const chatWithVijayawadaAi = async (prompt, status) => {
       PROJECT DNA: ${projectBriefing}
       Tactical Intelligence: ${JSON.stringify(SACRED_KNOWLEDGE)}
       Mission Grid: ${JSON.stringify(GLOBAL_MISSION_GRID)}
+      METEO_DATA: ${JSON.stringify(status.weather)}
       Live Status: ${JSON.stringify(status)}`;
 
     const response = await callGroqAi({

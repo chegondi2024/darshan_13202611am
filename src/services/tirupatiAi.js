@@ -675,6 +675,7 @@ export async function chatWithTirupatiAi(prompt, currentStatus, dbHistory = null
 PROJECT DNA: ${projectBriefing}
 KNOWLEDGE: ${JSON.stringify(SACRED_KNOWLEDGE)}
 GRID: ${JSON.stringify(GLOBAL_MISSION_GRID)}
+METEO_DATA: ${JSON.stringify(currentStatus.weather)}
 ROUTES: ${JSON.stringify(MISSION_ROUTES)}
 DB_HISTORY: ${dbHistory ? JSON.stringify(dbHistory) : "No historical data yet."}
 STATUS: ${JSON.stringify(currentStatus)}`;
@@ -702,6 +703,7 @@ STRICT PROTOCOLS:
 4. TACTICAL NAVIGATION: Use GRID and ROUTES to synthesize guidance.
 5. MULTILINGUAL MANDATE: If the user query includes a [LANGUAGE:X] directive, you MUST respond entirely in that language (Hindi/Telugu/English) using the appropriate regional script.
 6. SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for "SUPADHAM" paths (Infants under 1yr, NRIs, Defense) or "SRIVANI" Break Darshan. Use the KNOWLEDGE base to provide precise document requirements for these special missions.
+7. METEOROLOGICAL INTELLIGENCE: Use the provided [METEO_DATA] to proactively warn the user about weather impacts (Temp/Rain) on their pilgrimage mission. If Rain/Storm is detected, recommend indoor transit paths.
 
 FORMAT (JSON):
 {

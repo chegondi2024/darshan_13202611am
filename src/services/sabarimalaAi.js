@@ -46,6 +46,7 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical intelligence for the Lord Ayyappa mission.
     SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority, Virtual Q requirements, or Irumudi protocols. Use the KNOWLEDGE base to provide precise tactical briefings.
+    METEOROLOGICAL INTELLIGENCE: Use the provided [METEO_DATA] to proactively warn the user about weather conditions. If Rain is detected on the Neelimala-Appachimedu trail, emphasize the risk of slippery paths and recommend extreme caution for the trek to Sannidhanam.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -59,6 +60,7 @@ export const chatWithSabarimalaAi = async (prompt, status) => {
     const context = `
       PROJECT DNA: ${projectBriefing}
       TACTICAL KNOWLEDGE: ${JSON.stringify(SACRED_KNOWLEDGE)}
+      METEO_DATA: ${JSON.stringify(status.weather)}
       LIVE HUB TELEMETRY: ${JSON.stringify(status)}
     `;
 

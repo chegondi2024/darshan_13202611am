@@ -492,17 +492,24 @@ export const fetchRealTimeStatus = async (sector = 'tirupati', isOptimizing = fa
          const temp = Math.round(data.current.temperature_2m);
          const code = data.current.weather_code;
 
-         const condition = code < 3 ? 'CLEAR' :
-            (code >= 3 && code < 51) ? 'CLOUDY' :
-               (code >= 51 && code < 80) ? 'RAIN' : 'STORM';
+         const condition = code === 0 ? 'CLEAR' :
+            (code >= 1 && code <= 3) ? 'PARTLY CLOUDY' :
+            (code >= 45 && code <= 48) ? 'FOGGY' :
+            (code >= 51 && code <= 67) ? 'DRIZZLE' :
+            (code >= 71 && code <= 77) ? 'SNOW' :
+            (code >= 80 && code <= 82) ? 'RAIN SHOWERS' :
+            (code >= 95) ? 'THUNDERSTORM' : 'CLOUDY';
+
+         const comfortMap = temp > 35 ? 'EXTREME HEAT' : temp > 30 ? 'WARM' : temp < 15 ? 'CHILLY' : 'PLEASANT';
 
          status.weather = {
             condition: condition,
             temp: temp,
             humidity: data.current.relative_humidity_2m,
             wind_speed: data.current.wind_speed_10m,
-            comfort: temp > 30 ? 'WARM' : temp < 20 ? 'COOL' : 'PERFECT',
-            weatherImpact: condition === 'STORM' ? 1.4 : condition === 'RAIN' ? 1.2 : 1.0
+            comfort: comfortMap,
+            weatherImpact: (condition.includes('RAIN') || condition.includes('STORM')) ? 1.3 : 1.0,
+            icon_code: code
          };
       }
 

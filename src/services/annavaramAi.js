@@ -45,6 +45,7 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
     MISSION DATA: You possess total awareness of the [PROJECT DNA] infrastructure (30s heartbeat, live scrapers, aura shifting).
     YOUR ROLE: Provide tactical intelligence for the Satyanarayana Swamy Vratam mission.
     SPECIAL ENTRY INTELLIGENCE: Proactively identify if the user qualifies for Senior/Infant priority or Vratam batch requirements. Use the KNOWLEDGE base to provide precise tactical briefings.
+    METEOROLOGICAL INTELLIGENCE: Use the provided [METEO_DATA] to proactively warn the user about weather conditions. If Rain is detected on the Ratnagiri Hill, recommend the indoor Vratam halls and the free temple bus service.
     TELEMETRY RULE: NEVER guess wait times; strictly use the [LIVE STATUS] JSON.
 
     FORMAT (JSON):
@@ -58,6 +59,7 @@ export const chatWithAnnavaramAi = async (prompt, status) => {
     const context = `
       PROJECT DNA: ${projectBriefing}
       TACTICAL KNOWLEDGE: ${JSON.stringify(SACRED_KNOWLEDGE)}
+      METEO_DATA: ${JSON.stringify(status.weather)}
       LIVE HUB TELEMETRY: ${JSON.stringify(status)}
     `;
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Shield, Activity, Zap, Map as MapIcon, 
-  Terminal, Globe, ChevronRight, AlertTriangle, 
-  TrendingUp, TrendingDown, Clock, MousePointer,
-  Wallet, DoorOpen, Bus, Ticket, Sun
+   Shield, Activity, Zap, Map as MapIcon, 
+   Terminal, Globe, ChevronRight, AlertTriangle, 
+   TrendingUp, TrendingDown, Clock, MousePointer,
+   Wallet, DoorOpen, Bus, Ticket, Sun, Cloud, CloudRain
 } from 'lucide-react';
 import { fetchAllSectorsData } from '../services/liveDataService';
 import GisMap from './GisMap';
@@ -214,6 +214,29 @@ const UnifiedDashboard = ({ onDeploySector, onClose }) => {
                               <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Locker Availability</span>
                            </div>
                            <div className="text-[10px] font-black text-slate-950 uppercase">{lockers.percent || 0}% SECURE</div>
+                        </div>
+
+                        {/* 🌦️ METEOROLOGICAL GRID (NEW) */}
+                        <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-between group/weather relative overflow-hidden">
+                           <div className="flex items-center gap-2 relative z-10">
+                              <div className="p-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+                                 {sectorData.weather?.condition === 'CLEAR' ? <Sun size={12} className="text-yellow-500" /> :
+                                  sectorData.weather?.condition.includes('RAIN') || sectorData.weather?.condition.includes('DRIZZLE') ? <CloudRain size={12} className="text-blue-500" /> :
+                                  sectorData.weather?.condition.includes('THUNDER') ? <Zap size={12} className="text-orange-500" /> :
+                                  <Cloud size={12} className="text-slate-400" />}
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">{sectorData.weather?.condition || 'Analyzing Grid'}</span>
+                                 <span className="text-[10px] font-black text-slate-950 uppercase tracking-tight">{sectorData.weather?.comfort || 'SYNCHRONIZING'}</span>
+                              </div>
+                           </div>
+                           <div className="text-right relative z-10">
+                              <div className="text-lg font-black text-slate-950 tracking-tighter">{sectorData.weather?.temp || '--'}°C</div>
+                              <div className="text-[6px] font-black text-slate-400 uppercase tracking-widest">Digital Meteo</div>
+                           </div>
+                           <div className="absolute right-0 bottom-0 opacity-5 -mb-4 -mr-4 group-hover/weather:scale-125 transition-transform duration-700">
+                               <Sun size={64} className="text-yellow-500" />
+                           </div>
                         </div>
                      </div>
 
